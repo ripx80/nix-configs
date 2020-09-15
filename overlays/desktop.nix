@@ -2,9 +2,9 @@
 
 {
 
-  imports = [
-    <home-manager/nixos>
-  ];
+#   imports = [
+#     <home-manager/nixos>
+#   ];
   environment.systemPackages = with pkgs; [
     google-chrome
     killall
