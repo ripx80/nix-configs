@@ -12,10 +12,10 @@
     openbox
   ];
 
-  rip = {
-    openbox.enable = true;
-    gui.enable = true;
-  };
+#   rip = {
+#     openbox.enable = true;
+#     gui.enable = true;
+#   };
 
   virtualisation.docker.enable = true;
 
