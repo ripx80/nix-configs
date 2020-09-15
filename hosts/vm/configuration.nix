@@ -7,6 +7,7 @@
       ../../overlays/users
       ../../overlays/base.nix
       ../../overlays/desktop.nix
+      ../../overlays/locale.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
