@@ -18,9 +18,4 @@ with lib; {
             };
         };
     };
-    environment.systemPackages = with pkgs; [
-    nano
-    git
-    wireguard
-    ];
 }
