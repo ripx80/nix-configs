@@ -4,9 +4,9 @@
   imports =
     [
       ./hardware-configuration.nix
-      ../../overlays/users/
-      ../../overlays/base/
-      ../../overlays/desktop/
+      ../../overlays/users
+      ../../overlays/base.nix
+      ../../overlays/desktop.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
