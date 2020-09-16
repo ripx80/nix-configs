@@ -28,6 +28,8 @@
     neofetch
     hack-font
     alacritty
+    conky
+    rxvt_unicode
   ];
   #DRI acceleration
   #hardware.opengl.enable = true;
