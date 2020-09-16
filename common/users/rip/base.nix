@@ -3,13 +3,14 @@
 let
   nur-no-pkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {};
 in {
-  imports = with nur-no-pkgs.repos.rip.modules; [
-    # ./dev.nix
-    # ./git.nix
-    # ./k8s.nix
-    # ./nixops.nix
+home.packages = with pkgs; [
     neofetch
-  ];
+    ];
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
 
   programs.home-manager.enable = true;
 
