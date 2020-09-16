@@ -6,7 +6,8 @@
   users.users.rip = {
     isNormalUser = true;
     extraGroups = [ "wheel" "docker" ];
-    shell = pkgs.nushell;
+    shell = pkgs.bash;
+    #shell = pkgs.nushell;
   };
 
   users.motd = "
