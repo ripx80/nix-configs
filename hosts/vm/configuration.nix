@@ -4,10 +4,10 @@
   imports =
     [
       ./hardware-configuration.nix
-      ../../overlays/users
-      ../../overlays/base.nix
-      ../../overlays/desktop.nix
-      ../../overlays/locale.nix
+      ../../common/users
+      ../../common/base.nix
+      ../../common/desktop.nix
+      ../../common/locale.nix
     ];
 
   boot.loader.systemd-boot.enable = true;

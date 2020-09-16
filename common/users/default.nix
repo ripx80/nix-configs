@@ -28,5 +28,5 @@
 #``````````````\______\_______/
 ";
 
-  #home-manager.users.cadey = (import ./rip/core.nix);
+  home-manager.users.rip = (import ./rip/base.nix);
 }
