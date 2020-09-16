@@ -21,6 +21,12 @@
     #xorg.xf86videonouveau
     # window manager
     openbox
+    hsetroot
+    xcompmgr
+    zathura
+    neofetch
+    hack-font
+    alacritty
   ];
   #DRI acceleration
   #hardware.opengl.enable = true;
@@ -35,5 +41,6 @@
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   services.xserver.enable = true;
+  services.xserver.desktopManager.default = "none";
   services.xserver.displayManager.startx.enable = true;
 }
