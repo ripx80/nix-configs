@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  #imports = [ <home-manager/nixos> ];
+  imports = [ <home-manager/nixos> ];
 
   users.users.rip = {
     isNormalUser = true;
