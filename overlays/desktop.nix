@@ -15,7 +15,6 @@
     #xorg.xf86inputevdev
     #xorg.xf86inputsynaptics
     xorg.xf86inputlibinput
-    xorg.xf86inputvboxmouse
     # drivers
     #xorg.xf86videointel
     #xorg.xf86videoati
