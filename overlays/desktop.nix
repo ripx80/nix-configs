@@ -48,10 +48,10 @@ services.xserver = {
 
     exportConfiguration = true; # Important!
 
-    layout = "de-latin-nodeadkeys";
+    layout = "de";
     # xkbOptions = "eurosign:e";
 
-    videoDrivers = [ "vboxvideo" ];
+    videoDrivers = [ "virtualbox" ];
     resolutions = [
       { x = 1280; y = 720; }
       { x = 1920; y = 1080; }
