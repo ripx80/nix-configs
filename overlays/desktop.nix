@@ -7,6 +7,7 @@
 #   ];
   environment.systemPackages = with pkgs; [
     google-chrome
+    spotify
     killall
     file
     #xorg
@@ -30,10 +31,14 @@
     alacritty
     conky
     rxvt_unicode
+    vscode
+    pavucontrol
   ];
+  # spotify: to sync local tracks from your filesystem with mobile devices in the same network
+  # networking.firewall.allowedTCPPorts = [ 57621 ];
   #DRI acceleration
-  #hardware.opengl.enable = true;
-  #hardware.opengl.driSupport = true;
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport = true;
 
 #   rip = {
 #     openbox.enable = true;
@@ -42,6 +47,7 @@
 
   virtualisation.docker.enable = true;
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  hardware.pulseaudio.enable = true;
 
 services.xserver = {
     enable = true;
