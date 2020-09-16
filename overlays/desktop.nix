@@ -42,5 +42,6 @@
 
   services.xserver.enable = true;
   services.xserver.desktopManager.default = "none";
+  services.xserver.displayManager.defaultSession = "none+openbox";
   services.xserver.displayManager.startx.enable = true;
 }
