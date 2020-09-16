@@ -19,7 +19,7 @@
     #xorg.xf86videointel
     #xorg.xf86videoati
     #xorg.xf86videonouveau
-    vboxvideo
+    xorg.xf86videovboxvideo
     # window manager
     openbox
     hsetroot
