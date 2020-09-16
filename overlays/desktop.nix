@@ -15,6 +15,7 @@
     #xorg.xf86inputevdev
     #xorg.xf86inputsynaptics
     xorg.xf86inputlibinput
+    xorg.xf86inputvboxmouse
     # drivers
     #xorg.xf86videointel
     #xorg.xf86videoati
@@ -41,6 +42,25 @@
   virtualisation.docker.enable = true;
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
-  services.xserver.enable = true;
-  services.xserver.displayManager.startx.enable = true;
+services.xserver = {
+    enable = true;
+    displayManager.startx.enable = true;
+    autorun = false; # Important!
+
+    exportConfiguration = true; # Important!
+
+    layout = "de-latin-nodeadkeys";
+    # xkbOptions = "eurosign:e";
+
+    videoDrivers = [ "vboxvideo" ];
+    resolutions = [
+      { x = 1280; y = 720; }
+      { x = 1920; y = 1080; }
+      { x = 2560; y = 1440; }
+    ];
+
+    # Enable touchpad support.
+    libinput.enable = true;
+
+  };
 }
