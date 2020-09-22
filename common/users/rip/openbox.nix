@@ -13,5 +13,5 @@ with home {
         (conky) &
         pulseaudio --start
     fi
-    ''
+    '';
 }
