@@ -7,9 +7,15 @@
 #   ];
   environment.systemPackages = with pkgs; [
     google-chrome
-    spotify
     killall
     file
+    openbox
+    hsetroot
+    xcompmgr
+    zathura
+
+    spotify
+
     #xorg
     #xorg.xorgserver
     # input
@@ -22,11 +28,8 @@
     #xorg.xf86videonouveau
     xorg.xf86videovboxvideo
     # window manager
-    openbox
-    hsetroot
-    xcompmgr
-    zathura
-    neofetch
+
+
     hack-font
     alacritty
     conky

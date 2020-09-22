@@ -1,6 +1,7 @@
 { pkgs, config, ... }:
 
 {
+  home.packages = with pkgs; [ neofetch ];
   home.file.".config/neofetch/config.conf".text = ''
     # See this wiki page for more info:
     # https://github.com/dylanaraps/neofetch/wiki/Customizing-Info
@@ -85,6 +86,4 @@
     background_color=
     stdout="off"
   '';
-
-  home.packages = with pkgs; [ neofetch ];
 }

@@ -18,15 +18,4 @@
     path = "…";
   };
 
-  programs.git = {
-    #package = pkgs.git;
-    enable = true;
-    userName = "ripx80";
-    userEmail = "ripx80@protonmail.com";
-    # signing = {
-    #   key = "me@yrashk.com";
-    #   signByDefault = true;
-    # };
-  };
-
 }
