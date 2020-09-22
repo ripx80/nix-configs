@@ -14,4 +14,4 @@ with home {
         pulseaudio --start
     fi
     ''
-};
+}
