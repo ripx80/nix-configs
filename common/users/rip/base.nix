@@ -3,7 +3,7 @@
 {
   imports =
   [
-      neofetch.nix
+      ./neofetch.nix
   ];
   home.sessionVariables = {
     EDITOR = "nano";
