@@ -26,7 +26,7 @@
     aliases = {
         permission-reset = "!git diff -p -R --no-color | grep -E \"^(diff|(old|new) mode)\" --color=never | git apply";
     };
-    extraConfig = { http { sslCAinfo = "/etc/ssl/certs/ca-certificates.crt"; }; };
+    extraConfig = { http = { sslCAinfo = "/etc/ssl/certs/ca-certificates.crt"; }; };
     # signing = {
     #   key = "me@yrashk.com";
     #   signByDefault = true;
