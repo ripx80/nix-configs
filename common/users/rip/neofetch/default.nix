@@ -2,7 +2,7 @@
 
 {
     home = {
-        home.packages = with pkgs; [ neofetch ];
+        packages = with pkgs; [ neofetch ];
         file.".config/neofetch/config.confh".source = ./config.conf;
     };
 
