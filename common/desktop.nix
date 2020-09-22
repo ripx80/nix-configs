@@ -9,7 +9,7 @@
     google-chrome
     killall
     file
-    openbox
+
     hsetroot
     xcompmgr
     zathura
