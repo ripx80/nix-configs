@@ -1,9 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
+  imports =
+  [
       neofetch.nix
-  ]
+  ];
   home.sessionVariables = {
     EDITOR = "nano";
   };

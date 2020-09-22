@@ -9,6 +9,7 @@
     shell = pkgs.bash;
     #shell = pkgs.nushell;
   };
+  systemd.user.startServices = true;
 
   users.motd = "
 #`````````` ___    ____    ____
