@@ -3,8 +3,8 @@
 {
   imports =
   [
-      ./neofetch.nix
-      ./openbox.nix
+      ./neofetch
+      ./openbox
   ];
   home.sessionVariables = {
     EDITOR = "nano";

@@ -1,0 +1,10 @@
+{ pkgs, ... }:
+
+{
+    home = {
+        packages = with pkgs; [ openbox ];
+        file.".config/openbox/autostart.sh".source = ./autostart.sh;
+        file.".config/openbox/menu.xml".source = ./menu.xml;
+        file.".config/openbox/rc.xml".source = ./rc.xml;
+    };
+}
