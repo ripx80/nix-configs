@@ -1,8 +1,8 @@
 { pkgs, ... }:
 
 {
-  home = {
-    packages = with pkgs; [ alacritty ];
+
+
     programs.alacritty.enable = true;
     programs.alacritty.settings = ''
     # Configuration for Alacritty, the GPU enhanced terminal emulator.
@@ -621,6 +621,5 @@
     #- { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
     '';
 
-  };
 }
 
