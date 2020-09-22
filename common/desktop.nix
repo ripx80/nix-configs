@@ -34,11 +34,42 @@
     vscode
     pavucontrol
   ];
+
+hardware = {
+# Audio
+    # Use `pactl set-sink-volume 0 +10%` to increase volume.
+    pulseaudio = {
+      enable = true;
+      package = pkgs.pulseaudioFull;
+      support32Bit = true;
+      daemon.config = {
+        flat-volumes = "no";
+      };
+    };
   # spotify: to sync local tracks from your filesystem with mobile devices in the same network
   # networking.firewall.allowedTCPPorts = [ 57621 ];
   #DRI acceleration
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport = true;
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+
+    # Bluetooth
+    # https://nixos.wiki/wiki/Bluetooth
+    bluetooth = {
+      enable = true;
+      # For Bose QC 35
+      config = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+        };
+      };
+    };
+  };
+
+
+
 
 #   rip = {
 #     openbox.enable = true;

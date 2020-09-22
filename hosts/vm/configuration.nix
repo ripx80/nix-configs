@@ -21,10 +21,15 @@
   services.openssh.enable = true;
   system.stateVersion = "20.03";
 
-      environment.systemPackages = with pkgs; [
-        nano
-        git
-        wireguard
-    ];
+  environment.systemPackages = with pkgs; [
+    nano
+    git
+    wireguard
+  ];
+
+  hardware = {
+    enableRedistributableFirmware = true;
+    enableAllFirmware = true;
+  };
 }
 
