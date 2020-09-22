@@ -2,6 +2,9 @@
 
 {
   imports = [ <home-manager/nixos> ];
+  environment.systemPackages = with pkgs; [
+      home-manager
+  ];
 
   users.users.rip = {
     isNormalUser = true;
