@@ -13,6 +13,7 @@ https://nixos.wiki/wiki/Dual_Booting_NixOS_and_Windows
 https://nixos.org/guides/nix-pills/
 https://nixos.wiki/wiki/Flakes
 https://github.com/srid/nix-config
+https://rycee.gitlab.io/home-manager/options.html
 
 ```sh
 # list all system packages
