@@ -31,7 +31,7 @@
 
 
     hack-font
-    alacritty
+    #alacritty
     conky
     rxvt_unicode
     vscode

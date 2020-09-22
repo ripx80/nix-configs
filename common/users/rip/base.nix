@@ -5,6 +5,7 @@
   [
       ./neofetch
       ./openbox
+      ./alacritty
   ];
   home.sessionVariables = {
     EDITOR = "nano";
