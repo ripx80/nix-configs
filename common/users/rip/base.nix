@@ -19,7 +19,7 @@
   };
 
   programs.git = {
-    package = pkgs.gitAndTools.gitFull;
+    #package = pkgs.git;
     enable = true;
     userName = "ripx80";
     userEmail = "ripx80@protonmail.com";
