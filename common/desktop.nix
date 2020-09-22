@@ -78,7 +78,6 @@ hardware = {
 
   virtualisation.docker.enable = true;
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-  hardware.pulseaudio.enable = true;
 
 services.xserver = {
     enable = true;
