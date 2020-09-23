@@ -43,10 +43,9 @@
   # Wireguard client
   networking.wg-quick.interfaces = {
     wg0 = {
-      ips = [ "192.168.100.22/32" ];
-      #listenPort = 51820;
-      privateKeyFile = "/home/rip/vm/private";
+      address = [ "192.168.100.22/32" ];
       dns = [ "192.168.100.1" ];
+      privateKeyFile = "/home/rip/vm/private";
       peers = [
         { publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc=";
           allowedIPs = [ "0.0.0.0/0, ::/0" ];
