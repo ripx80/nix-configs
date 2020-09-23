@@ -43,12 +43,12 @@
   # Wireguard client
   networking.wireguard.interfaces = {
     wg0 = {
-      listenPort = 51820;
+      #listenPort = 51820;
       ips = [ "192.168.100.25/32" ];
       #dns = [ "192.168.100.1" ];
       privateKeyFile = "/home/rip/vm/private";
       peers = [
-        { publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc=";
+        { publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc="; # change to private
           allowedIPs = [ "0.0.0.0/0, ::/0" ];
           endpoint = (builtins.readFile /home/rip/vm/server);
           persistentKeepalive = 25;
