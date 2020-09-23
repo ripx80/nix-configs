@@ -88,9 +88,13 @@ https://github.com/nix-community/NUR#integrating-with-home-manager
 - [x] vscode
 - [x] home-manager
 - [x] vscode extenions (https://nixos.wiki/wiki/Vscode): use extention, because of settings
-- [ ] wireguard config
-- [ ] add seperate btrfs volume for nix
+- [x] wireguard config
+wireguad config isnt a good impl. So for my needs I will write the rust tool for server and client.
+maybe I can do something with preup and postdown
+
 - [ ] handle secrets like gpg-keys, wireguard keys, ssh keys (https://github.com/Mic92/sops-nix)
+- [ ] add seperate btrfs volume for nix
+
 
 - [ ] add wipes on every reboot, use btrfs snapshots
 - [ ] caches

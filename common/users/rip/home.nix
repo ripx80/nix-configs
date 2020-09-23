@@ -14,10 +14,22 @@
     EDITOR = "nano";
   };
 
-  home.packages = [
-    pkgs.unzip
-    pkgs.rustup
-    pkgs.niv
+  home.packages = with pkgs; [
+    unzip
+    rustup
+    niv
+    # rust alternatives
+    bat
+    exa
+    fd
+    procs
+    sd
+    du-dust
+    ripgrep-all
+    ytop
+    bandwhich
+    # grex download from github
+
   ];
 
   programs.home-manager = {

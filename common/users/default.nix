@@ -9,8 +9,8 @@
   users.users.rip = {
     isNormalUser = true;
     extraGroups = [ "wheel" "docker" "video" "audio"];
-    shell = pkgs.bash;
-    #shell = pkgs.nushell;
+    #shell = pkgs.bash;
+    shell = pkgs.nushell;
   };
 
   users.motd = "
