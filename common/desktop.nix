@@ -16,6 +16,7 @@
     pavucontrol
   ];
 
+
 hardware = {
     # Audio
     pulseaudio = {

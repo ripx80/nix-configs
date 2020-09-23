@@ -83,17 +83,22 @@ https://github.com/nix-community/NUR#integrating-with-home-manager
 
 - [x] spotify
 - [x] audio
-- [ ] wireguard config
-- [x] vscode
-- [ ] add seperate btrfs volume for nix
-- [ ] caches
-- [ ] nixopts
 - [x] go
 - [x] rust
+- [x] vscode
+- [x] home-manager
+- [x] vscode extenions (https://nixos.wiki/wiki/Vscode): use extention, because of settings
+- [ ] wireguard config
+- [ ] add seperate btrfs volume for nix
+- [ ] handle secrets like gpg-keys, wireguard keys, ssh keys (https://github.com/Mic92/sops-nix)
+
+- [ ] add wipes on every reboot, use btrfs snapshots
+- [ ] caches
+- [ ] nixopts
 - [ ] dual boot with windows
 - [ ] learn nix pills
-- [ ] home-manager
 - [ ] flakes
+
 
 
 I manage all my systems via nixops with all configuration in a ~/nixops 71 (including secrets, which are encrypted with git-crypt). To deploy a system I cd into it and run make $(hostname) which expands to nixops modify -d $(hostname) systems/$(hostname) && nixops deploy -d $(hostname) and some other commands (depending on the hostname). The target system requires an SSH server, even if you’re deploying locally.

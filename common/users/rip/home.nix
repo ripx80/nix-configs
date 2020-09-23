@@ -17,6 +17,7 @@
   home.packages = [
     pkgs.unzip
     pkgs.rustup
+    pkgs.niv
   ];
 
   programs.home-manager = {
