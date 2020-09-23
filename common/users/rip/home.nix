@@ -6,6 +6,9 @@
       ./neofetch
       ./openbox
       ./alacritty
+      ./conky
+      ./zathura
+
   ];
   home.sessionVariables = {
     EDITOR = "nano";
@@ -13,6 +16,7 @@
 
   home.packages = [
     pkgs.unzip
+    pkgs.rustup
   ];
 
   programs.home-manager = {
@@ -36,5 +40,6 @@
     #   signByDefault = true;
     # };
   };
+  programs.go.enable = true;
 
 }

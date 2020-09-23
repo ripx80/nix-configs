@@ -31,5 +31,5 @@
 #``````````````\______\_______/
 ";
 
-  home-manager.users.rip = (import ./rip/base.nix);
+  home-manager.users.rip = (import ./rip/home.nix);
 }

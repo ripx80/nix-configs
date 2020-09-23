@@ -14,6 +14,7 @@ https://nixos.org/guides/nix-pills/
 https://nixos.wiki/wiki/Flakes
 https://github.com/srid/nix-config
 https://rycee.gitlab.io/home-manager/options.html
+https://christine.website/blog/i-was-wrong-about-nix-2020-02-10
 
 ```sh
 # list all system packages
@@ -87,8 +88,8 @@ https://github.com/nix-community/NUR#integrating-with-home-manager
 - [ ] add seperate btrfs volume for nix
 - [ ] caches
 - [ ] nixopts
-- [ ] go
-- [ ] rust
+- [x] go
+- [x] rust
 - [ ] dual boot with windows
 - [ ] learn nix pills
 - [ ] home-manager

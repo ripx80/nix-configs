@@ -31,5 +31,18 @@
     enableRedistributableFirmware = true;
     enableAllFirmware = true;
   };
+  environment.systemPackages = with pkgs; [
+    xorg.xf86videovboxvideo
+    #xorg.xf86videointel
+    #xorg.xf86videoati
+    #xorg.xf86videonouveau
+  ];
+  services.xserver = {
+    videoDrivers = [ "virtualbox" ];
+    resolutions = [
+      { x = 1280; y = 720; }
+      { x = 1920; y = 1080; }
+      { x = 2560; y = 1440; }
+    ];
 }
 
