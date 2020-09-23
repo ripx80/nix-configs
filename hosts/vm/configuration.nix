@@ -25,18 +25,17 @@
     nano
     git
     wireguard
+     xorg.xf86videovboxvideo
+    #xorg.xf86videointel
+    #xorg.xf86videoati
+    #xorg.xf86videonouveau
   ];
 
   hardware = {
     enableRedistributableFirmware = true;
     enableAllFirmware = true;
   };
-  environment.systemPackages = with pkgs; [
-    xorg.xf86videovboxvideo
-    #xorg.xf86videointel
-    #xorg.xf86videoati
-    #xorg.xf86videonouveau
-  ];
+
   services.xserver = {
     videoDrivers = [ "virtualbox" ];
     resolutions = [
