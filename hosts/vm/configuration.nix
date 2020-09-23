@@ -41,10 +41,10 @@
   networking.firewall.allowedTCPPorts = [ 22 ];
 
   # Wireguard client
-  networking.wireguard.interfaces = {
+  networking.wq-quick.interfaces = {
     wg0 = {
       ips = [ "192.168.100.22/32" ];
-      listenPort = 51820;
+      #listenPort = 51820;
       privateKeyFile = "/home/rip/vm/private";
       dns = [ "192.168.100.1" ];
       peers = [
