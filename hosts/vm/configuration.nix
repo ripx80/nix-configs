@@ -18,6 +18,8 @@
     nano
     git
     wireguard
+    iptables
+    tcpdump
     xorg.xf86videovboxvideo
     #xorg.xf86videointel
     #xorg.xf86videoati
@@ -37,7 +39,7 @@
   networking.firewall.enable = false;
   services.openssh.enable = true;
 
-  networking.firewall.allowedUDPPorts = [ 51820 ];
+  #networking.firewall.allowedUDPPorts = [ 51820 ];
   networking.firewall.allowedTCPPorts = [ 22 ];
   networking.nameservers = [ "192.168.100.1" ];
 
@@ -50,7 +52,7 @@
 
   networking.wg-quick.interfaces = {
     wg0 = {
-      address = [ "192.168.100.25/24" ];
+      address = [ "192.168.100.25/32" ];
       privateKeyFile = "/home/rip/vm/private";
       #listenPort = 51820;
 
@@ -59,7 +61,8 @@
 
       peers = [
         {
-          allowedIPs = [ "192.168.100.0/24" ];
+          #allowedIPs = [ "192.168.100.0/24" ];
+          allowedIPs = [ "0.0.0.0/0" ];
           publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc="; # change to private
           endpoint = (builtins.readFile /home/rip/vm/server);
           persistentKeepalive = 25;
