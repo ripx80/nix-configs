@@ -16,7 +16,7 @@
 
   home.packages = [
     pkgs.unzip
-    #pkgs.rustup
+    pkgs.rustup
   ];
 
   programs.home-manager = {
