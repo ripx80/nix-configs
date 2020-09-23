@@ -50,7 +50,7 @@
 
   networking.wg-quick.interfaces = {
     wg0 = {
-      address = [ "192.168.100.25/32" ];
+      address = [ "192.168.100.25/24" ];
       privateKeyFile = "/home/rip/vm/private";
       #listenPort = 51820;
 
