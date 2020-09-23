@@ -41,7 +41,7 @@
   networking.firewall.allowedTCPPorts = [ 22 ];
 
   # Wireguard client
-  networking.wq-quick.interfaces = {
+  networking.wg-quick.interfaces = {
     wg0 = {
       ips = [ "192.168.100.22/32" ];
       #listenPort = 51820;
