@@ -39,18 +39,24 @@
 
   networking.firewall.allowedUDPPorts = [ 51820 ];
   networking.firewall.allowedTCPPorts = [ 22 ];
+  networking.nameservers = [ "192.168.100.1" ];
 
   # Wireguard client
+  # fwmark not supported
+  # set new default route not supported = AllowedIps 0.0.0.0/0
+  # all solutions fight with fwmark and namespaces
+
   networking.wireguard.interfaces = {
     wg0 = {
       #listenPort = 51820;
       ips = [ "192.168.100.25/32" ];
       #dns = [ "192.168.100.1" ];
+      table = "51820";
       privateKeyFile = "/home/rip/vm/private";
       peers = [
         {
           publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc="; # change to private
-          allowedIPs = [ "0.0.0.0/0" ];
+          allowedIPs = [ "192.168.100.0/24" ];
           endpoint = (builtins.readFile /home/rip/vm/server);
           persistentKeepalive = 25;
         }
