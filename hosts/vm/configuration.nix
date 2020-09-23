@@ -43,7 +43,7 @@
   # Wireguard client
   networking.wg-quick.interfaces = {
     wg0 = {
-      address = [ "192.168.100.22/32" ];
+      address = [ "192.168.100.25/32" ];
       dns = [ "192.168.100.1" ];
       privateKeyFile = "/home/rip/vm/private";
       peers = [
