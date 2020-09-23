@@ -58,7 +58,7 @@
           publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc="; # change to private
           allowedIPs = [ "192.168.100.0/24" ];
           endpoint = (builtins.readFile /home/rip/vm/server);
-          persistentKeepalive = 25;
+          # persistentKeepalive = 25;
         }
       ];
     };
