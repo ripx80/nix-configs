@@ -25,7 +25,7 @@
     procs
     sd
     du-dust
-    ripgrep-all
+    ripgrep
     ytop
     bandwhich
     # grex download from github
@@ -54,5 +54,4 @@
     # };
   };
   programs.go.enable = true;
-
 }
