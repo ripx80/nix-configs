@@ -34,17 +34,18 @@
   networking.hostName = "nix";
   networking.useDHCP = false;
   networking.interfaces.enp0s3.useDHCP = true;
-  networking.firewall.enable = true;
+  networking.firewall.enable = false;
   services.openssh.enable = true;
 
-  #networking.firewall.allowedUDPPorts = [ 51820 ];
+  networking.firewall.allowedUDPPorts = [ 51820 ];
   networking.firewall.allowedTCPPorts = [ 22 ];
 
   # Wireguard client
-  networking.wg-quick.interfaces = {
+  networking.wireguard.interfaces = {
     wg0 = {
-      address = [ "192.168.100.25/32" ];
-      dns = [ "192.168.100.1" ];
+      listenPort = 51820;
+      ips = [ "192.168.100.25/32" ];
+      #dns = [ "192.168.100.1" ];
       privateKeyFile = "/home/rip/vm/private";
       peers = [
         { publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc=";
