@@ -61,8 +61,7 @@
 
       peers = [
         {
-          #allowedIPs = [ "192.168.100.0/24" ];
-          allowedIPs = [ "0.0.0.0/0" ];
+          allowedIPs = [ "192.168.100.0/24" ];
           publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc="; # change to private
           endpoint = (builtins.readFile /home/rip/vm/server);
           persistentKeepalive = 25;
