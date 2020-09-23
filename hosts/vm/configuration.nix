@@ -45,15 +45,16 @@
   # fwmark not supported
   # set new default route not supported = AllowedIps 0.0.0.0/0
   # all solutions fight with fwmark and namespaces
+  # bug with systemd config file. add a newline so he not found the wg cmd
 
 
-  networking.wireguard.interfaces = {
+  networking.wg-quick.interfaces = {
     wg0 = {
-      ips = [ "192.168.100.25/32" ];
+      address = [ "192.168.100.25/32" ];
       privateKeyFile = "/home/rip/vm/private";
-      listenPort = 51820;
+      #listenPort = 51820;
 
-      #dns = [ "192.168.100.1" ];
+      dns = [ "192.168.100.1" ];
       #table = "51820";
 
       peers = [
