@@ -49,7 +49,7 @@
       peers = [
         { publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc=";
           allowedIPs = [ "0.0.0.0/0, ::/0" ];
-          endpoint = (builtins.readFile ./vm/server);
+          endpoint = (builtins.readFile /home/rip/vm/server);
           persistentKeepalive = 25;
         }
       ];
