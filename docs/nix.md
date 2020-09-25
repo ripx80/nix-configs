@@ -15,6 +15,8 @@ https://nixos.wiki/wiki/Flakes
 https://github.com/srid/nix-config
 https://rycee.gitlab.io/home-manager/options.html
 https://christine.website/blog/i-was-wrong-about-nix-2020-02-10
+https://github.com/Mic92/dotfiles
+https://github.com/Mic92/sops-nix
 
 ```sh
 # list all system packages
@@ -44,6 +46,8 @@ sudo nix-collect-garbage -d
 sudo nixos-rebuild boot
 # upgrade the complete system
 nixos-rebuild switch --upgrade
+#search for package
+nix-env -qaP 'aspell.*en'
 ```
 
 ## Base Configuration
@@ -79,6 +83,11 @@ nixos-rebuild switch --upgrade
 https://nixos.wiki/wiki/Home_Manager
 https://github.com/nix-community/NUR#integrating-with-home-manager
 
+## wireguard
+
+wireguad config isnt a good impl. So for my needs I will write the rust tool for server and client.
+maybe I can do something with preup and postdown
+
 ## todo
 
 - [x] spotify
@@ -87,15 +96,14 @@ https://github.com/nix-community/NUR#integrating-with-home-manager
 - [x] rust
 - [x] vscode
 - [x] home-manager
-- [x] vscode extenions (https://nixos.wiki/wiki/Vscode): use extention, because of settings
 - [x] wireguard config
-wireguad config isnt a good impl. So for my needs I will write the rust tool for server and client.
-maybe I can do something with preup and postdown
 
-- [ ] handle secrets like gpg-keys, wireguard keys, ssh keys (https://github.com/Mic92/sops-nix)
+- [ ] handle secrets
+    - [x] ssh keys: user, copy per hand
+    - [x] wireguard serverip, serverpub, privkey
+    - gpg-keys
+
 - [ ] add seperate btrfs volume for nix
-
-
 - [ ] add wipes on every reboot, use btrfs snapshots
 - [ ] caches
 - [ ] nixopts
@@ -103,6 +111,30 @@ maybe I can do something with preup and postdown
 - [ ] learn nix pills
 - [ ] flakes
 
+## Install Procedure
+
+- fmt harddrive
+- add chaneels
+
+```sh
+nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+nix-channel --add https://nixos.org/channels/nixos-20.03 nixos
+#nix-channel --add https://github.com/Mic92/sops-nix/archive/master.tar.gz sops-nix
+nix-channel --update
+
+git clone ssh://github.com/ripx80/nix-configs
+ln -s /home/rip/nix-configs/hosts/vm/configuration.nix /etc/nixos/configuration.nix
+
+# cp secrets to home
+chown -R rip.users secrets
+find . -type f -exec chmod 600 secrets
+find . -type d -exec chmod 700 secrets
+
+ln -s /home/rip/nix-configs/secrets secrets
+
+# keep things private, in enterprise use vault
+ln -s /home/rip/nix-configs/secrets/user/rip/ssh/ /home/rip/.ssh/
+```
 
 
 I manage all my systems via nixops with all configuration in a ~/nixops 71 (including secrets, which are encrypted with git-crypt). To deploy a system I cd into it and run make $(hostname) which expands to nixops modify -d $(hostname) systems/$(hostname) && nixops deploy -d $(hostname) and some other commands (depending on the hostname). The target system requires an SSH server, even if you’re deploying locally.

@@ -5,15 +5,7 @@
   environment.systemPackages = with pkgs; [
       home-manager
   ];
-
-  users.users.rip = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "docker" "video" "audio"];
-    #shell = pkgs.bash;
-    shell = pkgs.nushell;
-  };
-
-  users.motd = "
+    users.motd = "
 #`````````` ___    ____    ____
 #````______/```\__//```\__/____\
 #``_/```\_/``:```````````//____ \
@@ -31,5 +23,11 @@
 #``````````````\______\_______/
 ";
 
+  users.users.rip = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "docker" "video" "audio"];
+    #shell = pkgs.bash;
+    shell = pkgs.nushell;
+  };
   home-manager.users.rip = (import ./rip/home.nix);
 }

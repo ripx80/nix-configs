@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-    secret = import ../../secrets/hosts/vm/;
+    secret = import ../../secrets/hosts/vm;
     inherit (secret) wg_server_ip wg_server_pub;
 in {
   imports =
@@ -40,6 +40,8 @@ in {
   networking.interfaces.enp0s3.useDHCP = true;
   networking.firewall.enable = false;
   services.openssh.enable = true;
+  services.openssh.permitRootLogin = "no";
+  #ervices.openssh.passwordAuthentication = false;
 
   #networking.firewall.allowedUDPPorts = [ 51820 ];
   networking.firewall.allowedTCPPorts = [ 22 ];
