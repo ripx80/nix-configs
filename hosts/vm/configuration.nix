@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
-{
+let
+    import = "../../secrets/hosts/vm.nix";
+in {
   imports =
     [
       ./hardware-configuration.nix
@@ -53,7 +55,7 @@
   networking.wg-quick.interfaces = {
     wg0 = {
       address = [ "192.168.100.25/32" ];
-      privateKeyFile = "/home/rip/vm/private";
+      privateKeyFile = "/home/rip/wireguard/private";
       #listenPort = 51820;
 
       dns = [ "192.168.100.1" ];
@@ -62,8 +64,8 @@
       peers = [
         {
           allowedIPs = [ "192.168.100.0/24" ];
-          publicKey = "SzfrmGsjYO5kSRvhNq251cMXq1mM3YBQOHXvVeZYxSc="; # change to private
-          endpoint = (builtins.readFile /home/rip/vm/server);
+          publicKey =   wg_server_pub; # change to private
+          endpoint = wg_server_ip;
           persistentKeepalive = 25;
         }
       ];
