@@ -2,18 +2,10 @@
 
 {
   environment.systemPackages = with pkgs; [
-    google-chrome
-    killall
-    file
-    spotify
     # input
     #xorg.xf86inputevdev
     #xorg.xf86inputsynaptics
     xorg.xf86inputlibinput
-    hack-font
-    # rxvt_unicode
-    vscode
-    pavucontrol
   ];
 
 

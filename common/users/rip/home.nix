@@ -3,13 +3,14 @@
 {
   imports =
   [
+      ./home-desktop.nix
       ./neofetch
-      ./openbox
-      ./alacritty
-      ./conky
-      ./zathura
-
   ];
+
+  rip = {
+    gui.enable = true;
+  };
+
   home.sessionVariables = {
     EDITOR = "nano";
   };
@@ -35,7 +36,6 @@
     ytop
     bandwhich
     # grex download from github
-
   ];
 
   programs.home-manager = {
