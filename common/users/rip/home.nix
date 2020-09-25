@@ -6,9 +6,7 @@
       ./home-desktop.nix
   ];
 
-  rip = {
-    gui.enable = true; # need a global switch in config to disable desktop
-  };
+  rip.gui.enable = true;
 
   home.sessionVariables = {
     EDITOR = "nano";
