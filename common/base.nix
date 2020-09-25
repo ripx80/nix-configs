@@ -1,9 +1,9 @@
 { config, lib, pkgs, ... }:
 
-{
-  lib = {
-      config = {
+with lib; {
+    config = {
         boot.cleanTmpDir = true;
+
         nix = {
         autoOptimiseStore = true;
         gc = {
@@ -22,6 +22,5 @@
                 };
             };
         };
-      };
     };
 }

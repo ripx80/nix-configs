@@ -1,7 +1,8 @@
 { config, pkgs, ... }:
 
 let
-    import = "../../secrets/hosts/vm.nix";
+    secret = import ../../secrets/hosts/vm/;
+    inherit (secret) wg_server_ip wg_server_pub;
 in {
   imports =
     [
@@ -15,6 +16,7 @@ in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   system.stateVersion = "20.03";
+
 
   environment.systemPackages = with pkgs; [
     nano
@@ -32,8 +34,6 @@ in {
     enableRedistributableFirmware = true;
     enableAllFirmware = true;
   };
-
-
 
   networking.hostName = "nix";
   networking.useDHCP = false;
@@ -55,7 +55,7 @@ in {
   networking.wg-quick.interfaces = {
     wg0 = {
       address = [ "192.168.100.25/32" ];
-      privateKeyFile = "/home/rip/wireguard/private";
+      privateKeyFile = "/home/rip/nix-configs/secrets/hosts/vm/wgpriv";
       #listenPort = 51820;
 
       dns = [ "192.168.100.1" ];
@@ -64,7 +64,7 @@ in {
       peers = [
         {
           allowedIPs = [ "192.168.100.0/24" ];
-          publicKey =   wg_server_pub; # change to private
+          publicKey =   wg_server_pub;
           endpoint = wg_server_ip;
           persistentKeepalive = 25;
         }
