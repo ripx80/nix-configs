@@ -82,5 +82,10 @@ in {
       { x = 2560; y = 1440; }
     ];
   };
+  # gpg-agent
+#   programs.gnupg.agent = {
+#     enable = true;
+#     enableSSHSupport = true;
+#   };
 }
 

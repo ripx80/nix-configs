@@ -61,10 +61,4 @@
   };
   programs.go.enable = true;
 
-  # gpg-agent
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-
 }
