@@ -8,7 +8,7 @@ in {
     [
       ./hardware-configuration.nix
       ../../common/base.nix
-      ../../common/desktop.nix
+     # ../../common/desktop.nix
       ../../common/locale.nix
       ../../common/users
     ];
