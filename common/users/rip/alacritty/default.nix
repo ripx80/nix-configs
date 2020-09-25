@@ -2,7 +2,7 @@
 
 with lib;
 let
-    cfg = config.cadey.discord;
+    cfg = config.rip.alacritty;
 in {
   options = { rip.alacritty.enable = mkEnableOption "Alacritty"; };
   config = mkIf cfg.enable {

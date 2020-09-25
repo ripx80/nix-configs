@@ -22,6 +22,9 @@ in {
 
     config = mkIf cfg.enable {
         nixpkgs.config.allowUnfree = true;
+        rip = {
+            alacritty.enable = true;
+        };
         home.packages = with pkgs; [
             google-chrome
             killall
