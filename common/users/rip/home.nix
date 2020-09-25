@@ -5,7 +5,8 @@
   [
       ./home-desktop.nix
   ];
-  rip.gui.enable = true;
+
+  rip.gui.enable = true; # need a global switch in desktop.nix
 
   home.sessionVariables = {
     EDITOR = "nano";
