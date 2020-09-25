@@ -6,10 +6,6 @@
       ./home-desktop.nix
   ];
 
-  rip = {
-    gui.enable = true;
-  };
-
   home.sessionVariables = {
     EDITOR = "nano";
   };
