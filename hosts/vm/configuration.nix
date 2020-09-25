@@ -7,10 +7,10 @@ in {
   imports =
     [
       ./hardware-configuration.nix
-      ../../common/users
       ../../common/base.nix
       ../../common/desktop.nix
       ../../common/locale.nix
+      ../../common/users
     ];
 
   boot.loader.systemd-boot.enable = true;

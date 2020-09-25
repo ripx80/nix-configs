@@ -1,9 +1,6 @@
 { hardware, config, pkgs, lib, ... }:
 
 {
-
-  #lib.options.rip.gui.enable = lib.mkEnableOption "Enables GUI programs";
-  lib.options.rip.gui.enable = true; # need a global switch in config to disable desktop
   environment.systemPackages = with pkgs; [
     # input
     #xorg.xf86inputevdev
