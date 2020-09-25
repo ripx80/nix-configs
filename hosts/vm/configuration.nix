@@ -12,9 +12,6 @@ in {
       ../../common/desktop.nix
       ../../common/locale.nix
     ];
-  rip = {
-    gui.enable = true;
-  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
