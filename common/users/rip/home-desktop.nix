@@ -4,13 +4,13 @@ with lib;
 let
     cfg = config.rip.gui;
 in {
-    # imports =
-    #     [
-    #         ./openbox
-    #         ./alacritty
-    #         ./conky
-    #         ./zathura
-    #     ];
+    imports =
+        [
+          #  ./openbox
+            ./alacritty
+          #  ./conky
+          #  ./zathura
+        ];
 
     options = {
         rip.gui.enable = mkOption {
