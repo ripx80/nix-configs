@@ -6,10 +6,11 @@ let
 in {
     imports =
         [
-          #  ./openbox
+            ./openbox
             ./alacritty
-          #  ./conky
-          #  ./zathura
+            ./conky
+            ./zathura
+            ./neofetch
         ];
 
     options = {
@@ -23,7 +24,11 @@ in {
     config = mkIf cfg.enable {
         nixpkgs.config.allowUnfree = true;
         rip = {
+            openbox.enable = true;
             alacritty.enable = true;
+            conky.enable = true;
+            zathura.enable = true;
+            neofetch.enable = true;
         };
         home.packages = with pkgs; [
             google-chrome

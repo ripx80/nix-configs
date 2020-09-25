@@ -4,7 +4,6 @@
   imports =
   [
       ./home-desktop.nix
-      ./neofetch
   ];
 
   rip = {
