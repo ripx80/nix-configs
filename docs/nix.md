@@ -101,7 +101,7 @@ maybe I can do something with preup and postdown
 - [ ] handle secrets
     - [x] ssh keys: user, copy per hand
     - [x] wireguard serverip, serverpub, privkey
-    - gpg-keys
+    - [ ] gpg-keys, github signing
 
 - [ ] add seperate btrfs volume for nix
 - [ ] add wipes on every reboot, use btrfs snapshots

@@ -41,7 +41,7 @@ in {
   networking.firewall.enable = false;
   services.openssh.enable = true;
   services.openssh.permitRootLogin = "no";
-  #ervices.openssh.passwordAuthentication = false;
+  #services.openssh.passwordAuthentication = false;
 
   #networking.firewall.allowedUDPPorts = [ 51820 ];
   networking.firewall.allowedTCPPorts = [ 22 ];
