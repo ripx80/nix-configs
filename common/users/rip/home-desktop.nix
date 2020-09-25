@@ -40,7 +40,7 @@ in {
             vscode
             pavucontrol
             hack-font
-            # rxvt_unicode
+            rxvt_unicode
             vscode
             pavucontrol
         ];
