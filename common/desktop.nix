@@ -1,8 +1,6 @@
 { hardware, config, pkgs, lib, ... }:
 
 {
-
-  rip.gui.enable = true;
   environment.systemPackages = with pkgs; [
     # input
     #xorg.xf86inputevdev
