@@ -1,6 +1,8 @@
 { hardware, config, pkgs, ... }:
 
 {
+
+  options.rip.gui.enable = mkEnableOption "Enables GUI programs";
   environment.systemPackages = with pkgs; [
     # input
     #xorg.xf86inputevdev
