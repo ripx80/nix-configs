@@ -25,7 +25,7 @@
 
   users.users.rip = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "docker" "video" "audio"];
+    extraGroups = [ "wheel" "docker" "video" "audio" "tty"];
     shell = pkgs.bash;
     #shell = pkgs.nushell;
   };
