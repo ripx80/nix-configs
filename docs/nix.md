@@ -102,6 +102,7 @@ maybe I can do something with preup and postdown
     - [x] ssh keys: user, copy per hand
     - [x] wireguard serverip, serverpub, privkey
     - [ ] gpg-keys, github signing
+- [ ] global switch for home-manager desktop (home.nix to desktop.nix)
 
 - [ ] add seperate btrfs volume for nix
 - [ ] add wipes on every reboot, use btrfs snapshots
