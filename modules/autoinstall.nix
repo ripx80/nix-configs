@@ -137,7 +137,7 @@ in {
         false; # we don't want to generate filesystem entries on this image
 
       systemd.services.autoinstall = let
-        cmd = if cfg.flake != null then "install-flake" else "install-system";
+        cmd = if cfg.flake != "" then "install-flake" else "install-system";
       in {
         enable = cfg.autorun;
         description = "bootstrap a nixos installation";
@@ -147,11 +147,8 @@ in {
         script = with pkgs; ''
             set -euo pipefail
             echo 'journalctl -fb -n100 -uautoinstall' >>~nixos/.bash_history
-
+            chown nixos:users ~nixos/.bash_history
           ${cmd}
-
-            echo "done..."
-            echo 'Shutting off...'
             #${systemd}/bin/shutdown now
         '';
         environment = config.nix.envVars // {

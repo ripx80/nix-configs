@@ -86,7 +86,7 @@
     in {
       inherit lib;
       nixosModules = {
-        nix-configs = { imports = [ ./modules/default.nix ]; };
+        nix-configs = { imports = [ ./modules ]; };
       };
 
       overlays.default = (final: prev:
@@ -142,7 +142,7 @@
         minimal = lib.ripmod.mkNixosConfig {
           extraModules = lib.ripmod.systemModules.minimal ++ [
             ({ config, pkgs, lib, ... }: {
-              networking.useDHCP = true;
+              # networking.useDHCP = true;
               networking.hostName = "minimal";
             })
           ];
@@ -192,37 +192,42 @@
             copy to usb stick
             sudo dd if=$(echo result/iso/nixos*.iso) of=/dev/sdc bs=4M # this will delete all data on /dev/sdc
         */
-        autoinstall = lib.ripmod.mkNixosConfig {
-          hardwareModules = [ ];
+        iso = lib.ripmod.mkNixosConfig {
+          hardwareModules = []; # must be specified on extended module
           extraModules = lib.ripmod.systemModules.base ++ [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            #./modules/autoinstall.nix
-            (import ./modules/disko/luks.nix { disks = [ "/dev/sda" ]; })
             ({ config, pkgs, lib, ... }: {
-
-              ripmod.autoinstall = {
-                enable = true;
-                autorun = false; # not run automaticly
-                system =
-                  self.nixosConfigurations.minimal.config.system.build.toplevel;
-              };
-
-              boot.supportedFilesystems =
-                [ "btrfs" "vfat" ]; # reduced from profile/base.nix
-              isoImage.squashfsCompression =
-                "zstd -Xcompression-level 6"; # faster but large, default: best compression use for prod
-              isoImage = {
+                    boot.supportedFilesystems = [ "btrfs" "vfat" ]; # reduced from profile/base.nix
+                isoImage.squashfsCompression =
+                  "zstd -Xcompression-level 6"; # faster but large, default: best compression use for prod
+                #system.nixos.label = "ripos";
+                isoImage = {
                 # not working at the moment
                 #splashImage = ./modules/boot/splash/splash.png;
                 #efiSplashImage = ./modules/boot/splash/splash.png; # not working?
 
                 #grubTheme = null; # open bug canot set to null, so the background image never used: https://github.com/NixOS/nixpkgs/pull/156754
+                # https://github.com/NixOS/nixos-artwork/tree/master/bootloader/grub2-installer
                 prependToMenuLabel = "ripx80 - ";
                 appendToMenuLabel = version;
-              };
+                };
             })
           ];
         };
+
+        autoinstall = self.nixosConfigurations.iso.extendModules {
+            modules = [
+              (import ./modules/disko { disks = [ "/dev/sda" ]; })
+              ({ config, pkgs, lib, ... }: {
+                ripmod.autoinstall = lib.mkForce {
+                  enable = true;
+                  autorun = false;
+                  system =
+                    self.nixosConfigurations.minimal.config.system.build.toplevel;
+                };
+              })
+            ];
+          };
       };
 
       # check and use flake-utils.lib.eachDefaultSystem, throw warnings with legacyPackages.homeConfigurations

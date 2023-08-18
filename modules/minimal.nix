@@ -19,5 +19,8 @@
 
   environment.systemPackages = [ pkgs.nano ];
   networking.firewall.enable = true;
+  networking.enableIPv6 = false;
+  boot.kernel.sysctl = { "net.ipv6.conf.all.disable_ipv6" = true; };
   services.timesyncd.enable = true;
+  # boot.kernelPackages = pkgs.linuxPackages_latest; # todo
 }

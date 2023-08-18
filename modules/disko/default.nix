@@ -40,13 +40,13 @@
               ];
               subvolumes = {
                 "/__active" = {
-                  mountOptions =
-                    [ "noauto" "compress=zstd" "noatime" "autodefrag" ];
+                  #mountOptions =
+                  #  [ "noauto" "compress=zstd" "noatime" "autodefrag" ];
 
                 };
                 "/__snapshot" = {
-                  mountOptions =
-                    [ "noauto" "compress=zstd" "noatime" "autodefrag" ];
+                  #mountOptions =
+                  #  [ "noauto" "compress=zstd" "noatime" "autodefrag" ];
                 };
                 "/__active/root" = {
                   mountpoint = "/";
