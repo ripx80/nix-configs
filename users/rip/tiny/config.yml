@@ -1,0 +1,18 @@
+servers:
+    - addr: irc.libera.chat
+      port: 6697
+      tls: true
+      realname: ripx80
+      nicks: [ripx80]
+      alias: libera
+      join:
+          - "#lobsters"
+          - "#nixos"
+
+defaults:
+    nicks: [ripx80]
+    realname: ripx80
+    join: []
+    tls: true
+
+#log_dir: "{}"

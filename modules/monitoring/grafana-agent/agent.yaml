@@ -1,0 +1,68 @@
+server:
+  log_level: info
+  #http_listen_port: 9100 # deprecated
+
+metrics:
+  wal_directory: /tmp/wal
+  global:
+    scrape_interval: 5s
+    remote_write:
+      - url: ${GRAFANA_AGENT_URL}
+        basic_auth:
+          username: ${GRAFANA_AGENT_USER}
+          password: ${GRAFANA_AGENT_APIKEY}
+  configs:
+    - name: default
+      scrape_configs:
+        - job_name: node
+          static_configs:
+            - targets: ["127.0.0.1:9100"]
+logs:
+  configs:
+    - name: default
+      positions:
+        filename: /tmp/positions.yaml
+      scrape_configs:
+        - job_name: system
+          static_configs:
+            - targets: [localhost]
+              labels:
+                job: varlogs
+                __path__: /var/log/*log
+        - job_name: journal
+          journal:
+            json: false
+            max_age: 12h
+            path: /var/log/journal
+            labels:
+              job: systemd-journal
+              instance: ${HOSTNAME}
+          relabel_configs:
+            - source_labels: ["__journal__systemd_unit"]
+              target_label: "unit"
+      clients:
+        - url: ${GRAFANA_AGENT_URL_LOKI}
+          basic_auth:
+            username: ${GRAFANA_AGENT_USER_LOKI}
+            password: ${GRAFANA_AGENT_APIKEY_LOKI}
+# traces:
+#   configs:
+#     - name: default
+#       receivers:
+#         jaeger:
+#           protocols:
+#             grpc: # listens on the default jaeger grpc port: 14250
+#       remote_write:
+#         - endpoint: localhost:55680
+#           insecure: true # only add this if TLS is not required
+#           queue:
+#             retry_on_failure: true
+#       batch:
+#         timeout: 5s
+#         send_batch_size: 100
+
+integrations:
+  node_exporter:
+    enabled: true
+  process_exporter:
+    enabled: true

@@ -1,0 +1,5 @@
+#*.key filter=git-crypt diff=git-crypt
+meta.nix filter=git-crypt diff=git-crypt
+# access deployment key
+secrets.nix filter=git-crypt diff=git-crypt
+.gitattributes !filter !diff
