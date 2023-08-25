@@ -32,7 +32,7 @@ in {
       '';
     };
     programs.ssh = {
-      hostKeyAlgorithms = [ "ssh-ed25519" ];
+      hostKeyAlgorithms = [ "ssh-ed25519" "ssh-rsa" ];
       pubkeyAcceptedKeyTypes = [ "ssh-ed25519" ];
       knownHosts = cfg.knownHosts;
     };
