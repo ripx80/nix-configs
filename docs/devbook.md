@@ -357,3 +357,6 @@ try out:
 
   #flake = builtins.getFlake (toString ./.);
 ```
+
+single flake update:
+nix flake lock --update-input nixpkgs --update-input nix

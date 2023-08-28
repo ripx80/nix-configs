@@ -1,5 +1,5 @@
 # check after restruct
-{ config, pkgs, lib, sbUnbound, ... }:
+{ config, pkgs, lib, ... }:
 with lib;
 let
   cfg = config.ripmod.unbound;
@@ -31,6 +31,12 @@ in {
         type = types.listOf types.str;
         default = [ ];
         description = "add additional dns data here";
+      };
+
+      include = mkOption {
+        type = types.str;
+        default = "";
+        description = "add additional includes here";
       };
     };
   };
@@ -83,7 +89,7 @@ in {
           qname-minimisation = true;
           # better performance mutliple bind to one port
           so-reuseport = true;
-          include = "${sbUnbound}";
+          include = cfg.include;
         };
         server = { # maybe a option?
           domain-insecure = "fn";

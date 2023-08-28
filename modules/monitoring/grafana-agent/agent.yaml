@@ -12,9 +12,9 @@ metrics:
           username: ${GRAFANA_AGENT_USER}
           password: ${GRAFANA_AGENT_APIKEY}
   configs:
-    - name: default
+    - name: agent
       scrape_configs:
-        - job_name: node
+        - job_name: agent
           static_configs:
             - targets: ["127.0.0.1:9100"]
 logs:

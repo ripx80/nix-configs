@@ -58,7 +58,7 @@ in {
         User = "grafana";
         Restart = "always";
         ExecStart = ''
-          ${pkgs.grafana-agent}/bin/grafana-agent --config.file=/etc/grafana-agent/agent.yaml --config.expand-env --server.http.address="0.0.0.0:9100"'';
+          ${pkgs.grafana-agent}/bin/grafana-agent --config.file=/etc/grafana-agent/agent.yaml --config.expand-env --server.http.address="127.0.0.1:9100"'';
         EnvironmentFile = cfg.env;
       };
     };
