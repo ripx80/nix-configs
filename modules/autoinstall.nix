@@ -136,31 +136,31 @@ in {
       disko.enableConfig = lib.mkForce
         false; # we don't want to generate filesystem entries on this image
 
-      systemd.services.autoinstall = let
-        cmd = if cfg.flake != "" then "install-flake" else "install-system";
-      in {
-        enable = cfg.autorun;
-        description = "bootstrap a nixos installation";
-        wantedBy = [ "multi-user.target" ];
-        after = [ "network.target" "network-online.target" "polkit.service" ];
-        path = [ "/run/current-system/sw/" ];
-        script = with pkgs; ''
-            set -euo pipefail
-            echo 'journalctl -fb -n100 -uautoinstall' >>~nixos/.bash_history
-            chown nixos:users ~nixos/.bash_history
-          ${cmd}
-            #${systemd}/bin/shutdown now
-        '';
-        environment = config.nix.envVars // {
-          inherit (config.environment.sessionVariables) NIX_PATH;
-          HOME = "/root";
+      systemd.services.autoinstall =
+        let cmd = if cfg.flake != "" then "install-flake" else "install-system";
+        in {
+          enable = cfg.autorun;
+          description = "bootstrap a nixos installation";
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" "network-online.target" "polkit.service" ];
+          path = [ "/run/current-system/sw/" ];
+          script = with pkgs; ''
+              set -euo pipefail
+              echo 'journalctl -fb -n100 -uautoinstall' >>~nixos/.bash_history
+              chown nixos:users ~nixos/.bash_history
+            ${cmd}
+              #${systemd}/bin/shutdown now
+          '';
+          environment = config.nix.envVars // {
+            inherit (config.environment.sessionVariables) NIX_PATH;
+            HOME = "/root";
+          };
+          serviceConfig = {
+            Type = "oneshot";
+            User =
+              "root"; # must be root, nixos-install create with mktemp files under /mnt/tmp.XXXXXXX
+          };
         };
-        serviceConfig = {
-          Type = "oneshot";
-          User =
-            "root"; # must be root, nixos-install create with mktemp files under /mnt/tmp.XXXXXXX
-        };
-      };
     })
   ]);
 }

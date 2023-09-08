@@ -75,7 +75,7 @@ in {
 
           val-log-level = 1;
           use-syslog = true; # queries will be shipped
-          log-queries = true;
+          log-queries = false;
           #logfile = "/var/lib/unbound/unbound.log";
 
           cache-min-ttl = 1800;

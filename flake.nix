@@ -26,20 +26,15 @@
       # Helper generating outputs for each supported system
       forAllSystems =
         nixpkgs.lib.genAttrs [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" ];
-
-      # Import nixpkgs' package set for each system.
-      pkgsFor = forAllSystems (system:
-        import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-          # overlays = [ self.overlays ];
-        });
-
       pub = import ./pub.nix;
 
-      lib = nixpkgs.lib.extend (final: prev:
+    # check: https://codeberg.org/totoroot/dotfiles/src/branch/main/flake.nix
+    #   lib = nixos.lib.extend
+    #     (final: prev: { ripmod = import ./lib { inherit pkgs inputs; lib = final; }; });
 
-        let pkgs = pkgsFor."x86_64-linux"; # TODO: remove this with all systems
+      # todo: with lib it must be a better solution
+      lib = nixpkgs.lib.extend (final: prev:
+        let pkgs = self.pkgs."x86_64-linux";
         in {
           ripmod =
             # prev (super) -> points to lib before extension
@@ -48,7 +43,7 @@
               inherit inputs pkgs;
               lib = prev;
             } // import ./lib/mkSystem.nix {
-              inherit self inputs pub home-manager disko pkgs;
+              inherit self inputs pkgs pub home-manager disko;
               lib = prev;
             } // {
               systemModules = rec {
@@ -83,29 +78,30 @@
             };
         });
 
+
     in {
       inherit lib;
-      nixosModules = {
-        nix-configs = { imports = [ ./modules ]; };
-      };
+      nixosModules = { nix-configs = { imports = [ ./modules ]; }; };
 
-      overlays.default = (final: prev:
-        {
-          # isoImage.grubTheme = prev.isoImage.grubTheme.overrideAttrs (o: {
-          #     patches = (o.patches or [ ]) ++ [
-          #         ./patches/grub-theme.patch2
-          #     ];
-          #    });
+      pkgs = forAllSystems (system:
+        import nixpkgs {
+          inherit system;
+          overlays = [ self.overlays.default ];
+          config.allowUnfree = true;
+          config.allowAliases = true;
         });
 
+      overlays = import ./nix/overlay.nix inputs;
+
       packages = forAllSystems (system: {
+        whispercpp = self.pkgs.${system}.whispercpp;
         minimal = self.nixosConfigurations.minimal-vm.config.system.build.vm;
       });
-      formatter =
-        forAllSystems (system: let pkgs = pkgsFor.${system}; in pkgs.nixfmt);
+
+      formatter = forAllSystems (system: self.pkgs.${system}.nixfmt);
 
       checks = forAllSystems (system:
-        let pkgs = pkgsFor.${system};
+        let pkgs = self.pkgs.${system};
         in {
           # Check Nix formatting
           nixfmt = pkgs.runCommand "check nix format in project" {
@@ -118,7 +114,7 @@
         });
 
       devShells = forAllSystems (system:
-        let pkgs = pkgsFor.${system};
+        let pkgs = self.pkgs.${system};
         in {
           # Default dev shell (used by direnv)
           default = pkgs.mkShell {
@@ -193,15 +189,16 @@
             sudo dd if=$(echo result/iso/nixos*.iso) of=/dev/sdc bs=4M # this will delete all data on /dev/sdc
         */
         iso = lib.ripmod.mkNixosConfig {
-          hardwareModules = []; # must be specified on extended module
+          hardwareModules = [ ]; # must be specified on extended module
           extraModules = lib.ripmod.systemModules.base ++ [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             ({ config, pkgs, lib, ... }: {
-                    boot.supportedFilesystems = [ "btrfs" "vfat" ]; # reduced from profile/base.nix
-                isoImage.squashfsCompression =
-                  "zstd -Xcompression-level 6"; # faster but large, default: best compression use for prod
-                #system.nixos.label = "ripos";
-                isoImage = {
+              boot.supportedFilesystems =
+                [ "btrfs" "vfat" ]; # reduced from profile/base.nix
+              isoImage.squashfsCompression =
+                "zstd -Xcompression-level 6"; # faster but large, default: best compression use for prod
+              #system.nixos.label = "ripos";
+              isoImage = {
                 # not working at the moment
                 #splashImage = ./modules/boot/splash/splash.png;
                 #efiSplashImage = ./modules/boot/splash/splash.png; # not working?
@@ -210,24 +207,24 @@
                 # https://github.com/NixOS/nixos-artwork/tree/master/bootloader/grub2-installer
                 prependToMenuLabel = "ripx80 - ";
                 appendToMenuLabel = version;
-                };
+              };
             })
           ];
         };
 
         autoinstall = self.nixosConfigurations.iso.extendModules {
-            modules = [
-              (import ./modules/disko { disks = [ "/dev/sda" ]; })
-              ({ config, pkgs, lib, ... }: {
-                ripmod.autoinstall = lib.mkForce {
-                  enable = true;
-                  autorun = false;
-                  system =
-                    self.nixosConfigurations.minimal.config.system.build.toplevel;
-                };
-              })
-            ];
-          };
+          modules = [
+            (import ./modules/disko { disks = [ "/dev/sda" ]; })
+            ({ config, pkgs, lib, ... }: {
+              ripmod.autoinstall = lib.mkForce {
+                enable = true;
+                autorun = false;
+                system =
+                  self.nixosConfigurations.minimal.config.system.build.toplevel;
+              };
+            })
+          ];
+        };
       };
 
       # check and use flake-utils.lib.eachDefaultSystem, throw warnings with legacyPackages.homeConfigurations

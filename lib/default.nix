@@ -1,7 +1,7 @@
-{ lib, inputs, pkgs }: {
+{ lib, pkgs, inputs }: {
   fetchKeys = username:
     (builtins.fetchurl "https://github.com/${username}.keys");
-  isDarwin = system: (builtins.elem system inputs.nixpkgs.lib.platforms.darwin);
+  isDarwin = system: (builtins.elem system lib.platforms.darwin);
   homePrefix = system: if lib.ripmod.isDarwin system then "/Users" else "/home";
 
   mkiso = pkgs.writeScriptBin "mkiso" ''
