@@ -1,10 +1,13 @@
 { config, pkgs, lib, specialArgs, ... }:
 with lib;
 let
-darwin-pkgs = if pkgs.system == "x86_64-darwin"
-                then [ pkgs.vscode pkgs.spotify ]
-                # chrome only available on linux
-                else [ ];
+  darwin-pkgs = if pkgs.system == "x86_64-darwin" then [
+    pkgs.vscode
+    pkgs.spotify
+  ]
+  # chrome only available on linux
+  else
+    [ ];
 in {
   imports = [
     ../../hm # default hm config
@@ -24,27 +27,27 @@ in {
 
   #programs.go.enable = true;
 
-  home.packages = with pkgs; [
-    unzip
-    tig
-    bat
-    eza
-    fd
-    procs
-    sd
-    du-dust
-    ripgrep
-    bottom
-    bandwhich
-    difftastic
-    jq
-    # grex download from github
-    #starship comming soon
-    # hyperfine # benchmark
-    dogdns
-    git-crypt
-    # httpie
-  ]++ darwin-pkgs;
+  home.packages = with pkgs;
+    [
+      unzip
+      tig
+      bat
+      fd
+      procs
+      sd
+      du-dust
+      ripgrep
+      bottom
+      bandwhich
+      difftastic
+      jq
+      # grex download from github
+      #starship comming soon
+      # hyperfine # benchmark
+      dogdns
+      git-crypt
+      # httpie
+    ] ++ darwin-pkgs;
 
   # need this file for signing
   home.file.".ssh/allowed_signers".text =
@@ -74,6 +77,13 @@ in {
 
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
+
+  # comming in 23.11
+  #   programs.eza = {
+  #     enable = true;
+  #     enableAliases = true;
+  #     package = pkgs.unstable.eza;
+  #   };
 
   # extra config for all nixos systems
   # config = {

@@ -1,13 +1,13 @@
-{ self, lib, pkgs, inputs, pub, home-manager, disko }:let
-
+{ self, lib, pkgs, inputs, pub, home-manager, disko }:
+let
 
   isDarwin = system: (builtins.elem system lib.platforms.darwin);
   homePrefix = system: if isDarwin system then "/Users" else "/home";
 
 in {
-    fetchKeys = username:
+  fetchKeys = username:
     (builtins.fetchurl "https://github.com/${username}.keys");
-    mkiso = pkgs.writeScriptBin "mkiso" ''
+  mkiso = pkgs.writeScriptBin "mkiso" ''
     #!${pkgs.stdenv.shell}
     SYSTEM="''${1:-autoinstall}"
     ${pkgs.nixUnstable}/bin/nix build .#nixosConfigurations.''${SYSTEM}.config.system.build.isoImage

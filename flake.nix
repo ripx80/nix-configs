@@ -7,8 +7,9 @@
 
     home-manager = {
       url = "github:nix-community/home-manager/release-23.05";
-      # url = "github:nix-community/home-manager"; # unstable
       inputs.nixpkgs.follows = "nixpkgs";
+      #url = "github:nix-community/home-manager"; # unstable
+      #inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     disko = {
@@ -223,7 +224,6 @@
         };
       };
 
-      # check and use flake-utils.lib.eachDefaultSystem, throw warnings with legacyPackages.homeConfigurations
       #nixosConfigurations.ripbox.config.home-manager.users.rip
       homeConfigurations = {
         rip = lib.ripmod.mkHomeConfig {

@@ -1,8 +1,7 @@
 { config, lib, pkgs, programs, ... }:
 
 with lib;
-let
-    cfg = config.ripmod.bash;
+let cfg = config.ripmod.bash;
 
 in {
   options = { ripmod.bash.enable = mkEnableOption "Bash"; };
