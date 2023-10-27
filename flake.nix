@@ -40,9 +40,6 @@
             # prev (super) -> points to lib before extension
             # final (self) -> points to lib after extension
             import ./lib {
-              inherit inputs pkgs;
-              lib = prev;
-            } // import ./lib/mkSystem.nix {
               inherit self inputs pkgs pub home-manager disko;
               lib = prev;
             } // {

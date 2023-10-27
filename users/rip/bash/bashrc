@@ -12,6 +12,15 @@ for i in "${imports[@]}"
     source "$HOME/.config/bash/$i"
 done
 
+if [[ $OSTYPE == 'darwin'* ]]; then
+    # Nix, darwin need this
+    if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+    # shellcheck source=/dev/null
+    source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+    fi
+fi
+
+
 # funcs
 extract () {
    if [ -f "$1" ] ; then

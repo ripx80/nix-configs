@@ -1,7 +1,9 @@
 { config, lib, pkgs, programs, ... }:
 
 with lib;
-let cfg = config.ripmod.bash;
+let
+    cfg = config.ripmod.bash;
+
 in {
   options = { ripmod.bash.enable = mkEnableOption "Bash"; };
   config = mkIf cfg.enable {
@@ -18,6 +20,7 @@ in {
       # turn off the automated completion injection, need for macos workaround with completions
       enableCompletion = false;
       bashrcExtra = ''
+        #!/usr/bin/env bash
         if [[ -z BASH_COMPLETION_VERSINFO ]]; then
           . "${pkgs.bash-completion}/etc/profile.d/bash_completion.sh"
         fi
