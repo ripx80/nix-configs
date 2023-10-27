@@ -17,11 +17,11 @@ let
 
       buildInputs = [ pkgs.gnumake ];
 
-    #   preConfigure = ''
-    #     #cd src
-    #     # disable default static linking
-    #     #sed -i 's/ -static / /' makefile
-    #   '';
+      #   preConfigure = ''
+      #     #cd src
+      #     # disable default static linking
+      #     #sed -i 's/ -static / /' makefile
+      #   '';
 
       installPhase = ''
         runHook preInstall

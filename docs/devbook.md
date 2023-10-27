@@ -13,14 +13,17 @@
 - [x] (F) add: sshd initrd encryption keys
 - [x] (I) change: base nodocumentation on system
 - [x] (R) remove: delete old hardware-configuration, transfer to gist
-- [ ] (I) change: modules to real nixos modules
-- [ ] (I) add: default ripx80 grub splash image everywhere
+- [x] (I) change: modules to real nixos modules
+- [x] (I) add: default ripx80 grub splash image everywhere
+
+- [ ] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/)
+- [ ] (F) add: nixos build host (for ripmc)
+- [ ] (F) add: nixos cache on wgpx
 
 - [ ] (F) add: initrd - include wireguard and connect to wg server. so no static ip is needed to connect to
 - [ ] (F) add: initrd - use dhcp address in combination with dhcp option
 
 - [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
-- [ ] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/)
 
 - [ ] (I) change: add specialized autoinstall iso with a small size
 - [ ] (I) change: restructure flake outputs in seperate files
@@ -95,7 +98,6 @@
 - [ ] easy use of nix ignite vm
 - [ ] add seperate btrfs volume for nix
 - [ ] add wipes on every reboot, use btrfs snapshots
-- [ ] caches, nixos cache
 - [ ] (F) add: userinfo (func) return user info with profile
 - [ ] (F) add: [satisfactory](https://github.com/Misterio77/nix-config/blob/main/modules/nixos/satisfactory.nix)
 - [ ] (F) add: factorio server
@@ -360,3 +362,37 @@ try out:
 
 single flake update:
 nix flake lock --update-input nixpkgs --update-input nix
+
+## factorio: todo
+
+```nix
+#   containers.factorio = {
+#     autoStart = true;
+#     privateNetwork = true;
+#     hostAddress = "192.168.110.1";
+#     localAddress = "192.168.100.11";
+
+#     # networking.nat = {
+#     # enable = true;
+#     #     internalInterfaces = ["ve-+"];
+#     #     externalInterface = "wg0";
+#     #     enableIPv6 = false;
+#     # };
+
+#   config = { config, ... }: let
+#    inherit pkgs;
+#    in {
+#     system.stateVersion = "23.04";
+#     environment.etc."resolv.conf".text = "nameserver 8.8.8.8";
+#     networking.firewall = {
+#       enable = true;
+#       allowedTCPPorts = [ 34197 ];
+#     };
+#     services.factorio = {
+#       enable = true;
+#       #openFirewall = true;
+#       package = pkgs.factorio-headless;
+#     };
+#   };
+# };
+```

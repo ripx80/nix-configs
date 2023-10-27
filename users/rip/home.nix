@@ -38,7 +38,7 @@ in {
 
   # need this file for signing
   home.file.".ssh/allowed_signers".text =
-    "ripx80@protonmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0f8TJ57ydBSCKhsel9YYYcsoAsSjsj8J98bYrP+g33"; # change to secret version
+    "ripx80@protonmail.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0f8TJ57ydBSCKhsel9YYYcsoAsSjsj8J98bYrP+g33";
 
   programs.git = {
     enable = true;

@@ -28,9 +28,9 @@
         nixpkgs.lib.genAttrs [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" ];
       pub = import ./pub.nix;
 
-    # check: https://codeberg.org/totoroot/dotfiles/src/branch/main/flake.nix
-    #   lib = nixos.lib.extend
-    #     (final: prev: { ripmod = import ./lib { inherit pkgs inputs; lib = final; }; });
+      # check: https://codeberg.org/totoroot/dotfiles/src/branch/main/flake.nix
+      #   lib = nixos.lib.extend
+      #     (final: prev: { ripmod = import ./lib { inherit pkgs inputs; lib = final; }; });
 
       # todo: with lib it must be a better solution
       lib = nixpkgs.lib.extend (final: prev:
@@ -77,7 +77,6 @@
 
             };
         });
-
 
     in {
       inherit lib;

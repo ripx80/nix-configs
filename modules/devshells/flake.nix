@@ -57,7 +57,6 @@
               SOURCE_DATE_EPOCH=$(date +%s)
             '';
           };
-
         } // (pkgs.lib.mapAttrs (name: rustToolchain:
           let
             rustWithExtensions = rustToolchain.override {
