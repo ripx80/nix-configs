@@ -1,8 +1,11 @@
 { config, pkgs, lib, specialArgs, ... }:
 with lib;
 let
+darwin-pkgs = if pkgs.system == "x86_64-darwin"
+                then [ pkgs.vscode pkgs.spotify ]
+                # chrome only available on linux
+                else [ ];
 in {
-
   imports = [
     ../../hm # default hm config
     ./bash
@@ -10,6 +13,14 @@ in {
   ];
   ripmod.bash.enable = true;
   ripmod.tiny.enable = true;
+  #ripmod.wireshark.enable = true; # very long build times for qt min. 30 minutes, buggy on macos
+
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      allowUnfreePredicate = (_: true);
+    };
+  };
 
   #programs.go.enable = true;
 
@@ -34,7 +45,7 @@ in {
     dogdns
     git-crypt
     # httpie
-  ];
+  ]++ darwin-pkgs;
 
   # need this file for signing
   home.file.".ssh/allowed_signers".text =

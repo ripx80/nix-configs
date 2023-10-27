@@ -3,7 +3,7 @@
   stateVersion = if builtins.hasAttr "nixosConfig" specialArgs then
     specialArgs.nixosConfig.system.stateVersion
   else
-    "22.05"; # todo as argu
+    "23.05"; # todo as argu
 in {
   imports = [ ./desktop.nix ]; # todo
   config = {
@@ -19,7 +19,7 @@ in {
 
     programs.home-manager = {
       enable = true;
-      path = "…";
+      #path = ".";
     };
   };
 })
