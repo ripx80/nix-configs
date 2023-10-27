@@ -26,10 +26,9 @@ in {
 
   home.packages = with pkgs; [
     unzip
-    #niv
     tig
     bat
-    exa
+    eza
     fd
     procs
     sd

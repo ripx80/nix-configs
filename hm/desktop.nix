@@ -42,7 +42,6 @@ in {
       hack-font
       vscode
       pavucontrol
-      hack-font
       rxvt_unicode
       pavucontrol
       geeqie
