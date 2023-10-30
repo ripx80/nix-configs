@@ -93,7 +93,10 @@
       packages = forAllSystems (system: {
         whispercpp = self.pkgs.${system}.whispercpp;
         minimal = self.nixosConfigurations.minimal-vm.config.system.build.vm;
+        darwin-vm = self.nixosConfigurations.darwin-vm.config.system.build.vm;
+
       });
+
 
       formatter = forAllSystems (system: self.pkgs.${system}.nixfmt);
 
@@ -157,6 +160,20 @@
               # Enable passwordless ‘sudo’ for the "test" user
               users.users.test.extraGroups = [ "wheel" ];
               security.sudo.wheelNeedsPassword = false;
+            })
+          ];
+        };
+
+        /*
+            nixos vm running on a darwin system
+        */
+        darwin-vm = self.nixosConfigurations.minimal-vm.extendModules {
+          modules = lib.ripmod.systemModules.vm ++ [
+            ({ config, pkgs, lib, ... }: {
+                networking.useDHCP = false;
+                networking.nameservers = [ "8.8.8.8" ];
+                virtualisation.vmVariant.virtualisation.graphics = false;
+                virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.x86_64-darwin;
             })
           ];
         };

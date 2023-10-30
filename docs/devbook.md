@@ -16,8 +16,9 @@
 - [x] (I) change: modules to real nixos modules
 - [x] (I) add: default ripx80 grub splash image everywhere
 
-- [ ] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/)
-- [ ] (F) add: nixos build host (for ripmc)
+- [x] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/) with darwin builder
+- [x] (F) add: nixos build host (for ripmc)
+- [ ] (B) fix: nixos vm on darwin has no internet connection
 - [ ] (F) add: nixos cache on wgpx
 
 - [ ] (F) add: initrd - include wireguard and connect to wg server. so no static ip is needed to connect to
@@ -395,4 +396,96 @@ nix flake lock --update-input nixpkgs --update-input nix
 #     };
 #   };
 # };
+```
+
+## remote builds
+
+[doc](https://nixos.org/manual/nix/stable/advanced-topics/distributed-builds.html)
+
+```sh
+nix store ping --store ssh://wgpx # check remote
+```
+
+## macos linux
+
+[doc](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/)
+
+build a linux vm on darwin with a remote host:
+
+ nix run .#nixosConfigurations.linuxVM.config.system.build.vm --builders ssh-ng://some-linux-builder
+
+nix run .#darwin --builders ssh-ng://some-linux-builder
+
+https://nixos.org/manual/nixpkgs/stable/#sec-darwin-builder
+https://jamesguthrie.ch/blog/deploy-nixos-raspi/
+
+### macos setup remote build
+
+check if the remote host can build your packages
+
+```sh
+nix store ping --store ssh-ng://deploy@wgpx?ssh-key=/var/root/.ssh/id_ed25519
+```
+
+the build will be performed as root and the ssh private key file must be owned as root.
+
+```nix
+#/etc/nix/nix.con
+builders = ssh-ng://deploy@wgpx?ssh-key=/var/root/.ssh/id_ed25519 x86_64-linux - 10 2 benchmark,big-parallel,kvm,nixos-test - -
+builders-use-substitutes = true
+```
+
+if you change /etc/nix/nix.conf you must restart the nix daemon:
+
+```nix
+sudo launchctl stop org.nixos.nix-daemon;
+sudo launchctl start org.nixos.nix-daemon;
+
+#or restart
+sudo launchctl kickstart -k system/org.nixos.nix-daemon
+````
+
+check if config ist applied to the daemon
+
+```sh
+nix show-config | rg '(max-jobs|system-features|builders) '
+```
+
+now try to build a package on the remote host with a different arch. max-jobs 0 will force you build remote.
+
+```sh
+nix build -vvvvv  --impure --expr '(with import <nixpkgs> { system = "x86_64-linux"; }; runCommand "foo" {} "uname > $out")' --max-jobs 0
+cat result
+```
+
+### macos darwin builder
+
+[doc](https://nixos.org/manual/nixpkgs/unstable/#sec-darwin-builder)
+
+```sh
+nix run nixpkgs#darwin.linux-builder # will ask sudo password
+```
+
+add this to the files
+
+```nix
+#/etc/nix/nix.conf
+builders = ssh-ng://builder@linux-builder x86_64-linux /etc/nix/builder_ed25519 10 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUF$
+builders-use-substitutes = true
+```
+
+```nix
+#sudo nano /etc/ssh/ssh_config.d/100-linux-builder.conf
+Host linux-builder
+  Hostname localhost
+  HostKeyAlias linux-builder
+  Port 31022
+```
+
+you can combine the local darwin builder wit a remote builder:
+
+```nix
+#/etc/nix/nix.conf
+builders = ssh-ng://deploy@wgpx?ssh-key=/var/root/.ssh/id_ed25519 x86_64-linux - 10 2 benchmark,big-parallel,kvm,nixos-test - - ; ssh-ng://builder@linux-builder x86_64-linux /etc/nix/builder_ed25519 10 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo=
+builders-use-substitutes = true
 ```

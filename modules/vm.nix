@@ -29,8 +29,9 @@ with lib; {
       options = [
         "-cpu kvm64"
         "-net nic" # add predictable interface names
-        "-bios"
-        "${pkgs.OVMF.fd}/FV/OVMF.fd"
+        "-net user" # needed on mac
+        #"-bios"
+        #"${pkgs.OVMF.fd}/FV/OVMF.fd" # cause problems on macos, needed?
       ];
     };
     # writableStore = false; # false: you canot build in vm itself and write to store
@@ -52,7 +53,9 @@ with lib; {
 
   #boot.growPartition = true;
 
-  networking = { interfaces = mkForce { eth0.useDHCP = true; }; };
+  networking = { interfaces = mkForce { eth0.useDHCP = true; }; }; #needed?
+
+
   # desktop
   #     environment.systemPackages = with pkgs; [
   #         xorg.xf86videovboxvideo
