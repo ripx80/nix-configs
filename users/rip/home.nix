@@ -65,6 +65,13 @@ in {
       http = { sslCAinfo = "/etc/ssl/certs/ca-certificates.crt"; };
       push = { default = "matching"; };
       pull = { rebase = true; };
+      fetch = { prune = true; };
+      diff.sqlite3 = {
+        binary = true;
+        textconv = "echo .dump | sqlite3";
+        # textconv = "echo .dump | sqlite3" # add this to .gitattributes to see the sqlite3 diff
+      };
+      core.editor = "nano -w";
 
       # Sign all tags and commits using ssh key
       commit.gpgsign = true;
