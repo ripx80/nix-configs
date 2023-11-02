@@ -97,7 +97,6 @@
 
       });
 
-
       formatter = forAllSystems (system: self.pkgs.${system}.nixfmt);
 
       checks = forAllSystems (system:
@@ -164,16 +163,15 @@
           ];
         };
 
-        /*
-            nixos vm running on a darwin system
-        */
+        # nixos vm running on a darwin system
         darwin-vm = self.nixosConfigurations.minimal-vm.extendModules {
           modules = lib.ripmod.systemModules.vm ++ [
             ({ config, pkgs, lib, ... }: {
-                networking.useDHCP = false;
-                networking.nameservers = [ "8.8.8.8" ];
-                virtualisation.vmVariant.virtualisation.graphics = false;
-                virtualisation.vmVariant.virtualisation.host.pkgs = nixpkgs.legacyPackages.x86_64-darwin;
+              networking.useDHCP = false;
+              networking.nameservers = [ "8.8.8.8" ];
+              virtualisation.vmVariant.virtualisation.graphics = false;
+              virtualisation.vmVariant.virtualisation.host.pkgs =
+                nixpkgs.legacyPackages.x86_64-darwin;
             })
           ];
         };

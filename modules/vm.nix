@@ -53,8 +53,7 @@ with lib; {
 
   #boot.growPartition = true;
 
-  networking = { interfaces = mkForce { eth0.useDHCP = true; }; }; #needed?
-
+  networking = { interfaces = mkForce { eth0.useDHCP = true; }; }; # needed?
 
   # desktop
   #     environment.systemPackages = with pkgs; [

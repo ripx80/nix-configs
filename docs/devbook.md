@@ -15,38 +15,23 @@
 - [x] (R) remove: delete old hardware-configuration, transfer to gist
 - [x] (I) change: modules to real nixos modules
 - [x] (I) add: default ripx80 grub splash image everywhere
-
 - [x] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/) with darwin builder
 - [x] (F) add: nixos build host (for ripmc)
+- [x] (F) add: headscale module
+
+- [x] (T) test: finish desktop.nix, test all audio stuff
+- [x] (T) test: home-manager on mac if all working, use isDarwin from lib
+- [x] (T) change: compare home-manager desktop with nixos desktop
+
 - [ ] (B) fix: nixos vm on darwin has no internet connection
+
+- [ ] (I) add: nixos module for distributed builds
+
+- [ ] (F) add: nixos module for binary cache (substituters)
 - [ ] (F) add: nixos cache on wgpx
 
-- [ ] (F) add: initrd - include wireguard and connect to wg server. so no static ip is needed to connect to
-- [ ] (F) add: initrd - use dhcp address in combination with dhcp option
-
-- [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
-
-- [ ] (I) change: add specialized autoinstall iso with a small size
-- [ ] (I) change: restructure flake outputs in seperate files
-- [ ] (I) change: to new password hashes with mkpasswd
-- [ ] (I) add: offline builds for installed system
-- [ ] (F) add: apps in flake like mkiso, startvm
-- [ ] (I) change: wireshark config, hm not support enable
-- [ ] (F) add: silent mode: disable all communication services
-- [ ] (F) add: headscale module
-- [ ] (F) add: router firewall config
-- [ ] (F) add: knownHost, pub-ssh-userkey generator
-- [ ] (F) add: starship config
-- [ ] (T) test: check Stubby as a dnsproxy
-- [ ] (F) add: documentation with asciinema
-- [ ] (F) add: disko - snapshot task for btrfs subvolumes
-- [ ] (I) change: luks -  must be replace by a real encryption key
-- [ ] (I) add: luks - backup luksHeader
-- [ ] (T) test: fix ignite
-- [ ] (T) test: fix smartd, not tested, use mail
-- [ ] (T) test: finish desktop.nix, test all audio stuff
-- [ ] (T) test: home-manager on mac if all working, use isDarwin from lib
-- [ ] (T) change: compare home-manager desktop with nixos desktop
+- [ ] (I) add: offline builds for installed system [doc](https://linus.schreibt.jetzt/posts/include-build-dependencies.html), system.includeBuildDependencies
+- [ ] (F) add: initrd wg module - include wireguard (client) and connect to wg server. so no static ip is needed to connect to. this key must be a different one and will be in a quarantine wg net
 
 ## v0.1 - flakes
 
@@ -94,8 +79,28 @@
 
 ### Maybe
 
+- [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
+- [ ] (F) add: initrd - use dhcp address in combination with dhcp option
+- [ ] (I) change: add specialized autoinstall iso with a small size
+- [ ] (I) change: restructure flake outputs in seperate files
+- [ ] (I) change: to new password hashes with mkpasswd
+
+- [ ] (F) add: apps in flake like mkiso, startvm
+- [ ] (I) change: wireshark config, hm not support enable
+- [ ] (F) add: silent mode: disable all communication services
+
+- [ ] (F) add: router firewall config
+- [ ] (F) add: knownHost, pub-ssh-userkey generator
+- [ ] (F) add: starship config
+- [ ] (T) test: check Stubby as a dnsproxy
+- [ ] (F) add: documentation with asciinema
+- [ ] (F) add: disko - snapshot task for btrfs subvolumes
+- [ ] (I) change: luks -  must be replace by a real encryption key
+- [ ] (I) add: luks - backup luksHeader
+- [ ] (T) test: fix ignite
+- [ ] (T) test: fix smartd, not tested, use mail
+
 - [ ] setup for alpine container with nix
-- [ ] better wireguard config system
 - [ ] easy use of nix ignite vm
 - [ ] add seperate btrfs volume for nix
 - [ ] add wipes on every reboot, use btrfs snapshots
@@ -416,8 +421,8 @@ build a linux vm on darwin with a remote host:
 
 nix run .#darwin --builders ssh-ng://some-linux-builder
 
-https://nixos.org/manual/nixpkgs/stable/#sec-darwin-builder
-https://jamesguthrie.ch/blog/deploy-nixos-raspi/
+- [darwin builder](https://nixos.org/manual/nixpkgs/stable/#sec-darwin-builder)
+- [raspi deploy](https://jamesguthrie.ch/blog/deploy-nixos-raspi/)
 
 ### macos setup remote build
 
