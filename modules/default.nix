@@ -21,5 +21,6 @@
     ./watermark.nix
     ./desktop.nix
     ./net-local.nix
+    ./builder.nix
   ];
 }

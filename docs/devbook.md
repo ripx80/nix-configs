@@ -15,37 +15,21 @@
 - [x] (R) remove: delete old hardware-configuration, transfer to gist
 - [x] (I) change: modules to real nixos modules
 - [x] (I) add: default ripx80 grub splash image everywhere
+- [x] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/) with darwin builder
+- [x] (F) add: nixos build host (for ripmc)
+- [x] (F) add: headscale module
+- [x] (I) add: nixos module for distributed builds
+- [x] (T) test: finish desktop.nix, test all audio stuff
+- [x] (T) test: home-manager on mac if all working, use isDarwin from lib
+- [x] (T) change: compare home-manager desktop with nixos desktop
 
-- [ ] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/)
-- [ ] (F) add: nixos build host (for ripmc)
+- [ ] (B) fix: nixos vm on darwin has no internet connection
+
+- [ ] (F) add: nixos module for binary cache (substituters), use http
 - [ ] (F) add: nixos cache on wgpx
 
-- [ ] (F) add: initrd - include wireguard and connect to wg server. so no static ip is needed to connect to
-- [ ] (F) add: initrd - use dhcp address in combination with dhcp option
-
-- [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
-
-- [ ] (I) change: add specialized autoinstall iso with a small size
-- [ ] (I) change: restructure flake outputs in seperate files
-- [ ] (I) change: to new password hashes with mkpasswd
-- [ ] (I) add: offline builds for installed system
-- [ ] (F) add: apps in flake like mkiso, startvm
-- [ ] (I) change: wireshark config, hm not support enable
-- [ ] (F) add: silent mode: disable all communication services
-- [ ] (F) add: headscale module
-- [ ] (F) add: router firewall config
-- [ ] (F) add: knownHost, pub-ssh-userkey generator
-- [ ] (F) add: starship config
-- [ ] (T) test: check Stubby as a dnsproxy
-- [ ] (F) add: documentation with asciinema
-- [ ] (F) add: disko - snapshot task for btrfs subvolumes
-- [ ] (I) change: luks -  must be replace by a real encryption key
-- [ ] (I) add: luks - backup luksHeader
-- [ ] (T) test: fix ignite
-- [ ] (T) test: fix smartd, not tested, use mail
-- [ ] (T) test: finish desktop.nix, test all audio stuff
-- [ ] (T) test: home-manager on mac if all working, use isDarwin from lib
-- [ ] (T) change: compare home-manager desktop with nixos desktop
+- [ ] (I) add: offline builds for installed system [doc](https://linus.schreibt.jetzt/posts/include-build-dependencies.html), system.includeBuildDependencies
+- [ ] (F) add: initrd wg module - include wireguard (client) and connect to wg server. so no static ip is needed to connect to. this key must be a different one and will be in a quarantine wg net
 
 ## v0.1 - flakes
 
@@ -93,8 +77,28 @@
 
 ### Maybe
 
+- [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
+- [ ] (F) add: initrd - use dhcp address in combination with dhcp option
+- [ ] (I) change: add specialized autoinstall iso with a small size
+- [ ] (I) change: restructure flake outputs in seperate files
+- [ ] (I) change: to new password hashes with mkpasswd
+
+- [ ] (F) add: apps in flake like mkiso, startvm
+- [ ] (I) change: wireshark config, hm not support enable
+- [ ] (F) add: silent mode: disable all communication services
+
+- [ ] (F) add: router firewall config
+- [ ] (F) add: knownHost, pub-ssh-userkey generator
+- [ ] (F) add: starship config
+- [ ] (T) test: check Stubby as a dnsproxy
+- [ ] (F) add: documentation with asciinema
+- [ ] (F) add: disko - snapshot task for btrfs subvolumes
+- [ ] (I) change: luks -  must be replace by a real encryption key
+- [ ] (I) add: luks - backup luksHeader
+- [ ] (T) test: fix ignite
+- [ ] (T) test: fix smartd, not tested, use mail
+
 - [ ] setup for alpine container with nix
-- [ ] better wireguard config system
 - [ ] easy use of nix ignite vm
 - [ ] add seperate btrfs volume for nix
 - [ ] add wipes on every reboot, use btrfs snapshots
@@ -395,4 +399,96 @@ nix flake lock --update-input nixpkgs --update-input nix
 #     };
 #   };
 # };
+```
+
+## remote builds
+
+[doc](https://nixos.org/manual/nix/stable/advanced-topics/distributed-builds.html)
+
+```sh
+nix store ping --store ssh://wgpx # check remote
+```
+
+## macos linux
+
+[doc](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/)
+
+build a linux vm on darwin with a remote host:
+
+ nix run .#nixosConfigurations.linuxVM.config.system.build.vm --builders ssh-ng://some-linux-builder
+
+nix run .#darwin --builders ssh-ng://some-linux-builder
+
+- [darwin builder](https://nixos.org/manual/nixpkgs/stable/#sec-darwin-builder)
+- [raspi deploy](https://jamesguthrie.ch/blog/deploy-nixos-raspi/)
+
+### macos setup remote build
+
+check if the remote host can build your packages
+
+```sh
+nix store ping --store ssh-ng://deploy@wgpx?ssh-key=/var/root/.ssh/id_ed25519
+```
+
+the build will be performed as root and the ssh private key file must be owned as root.
+
+```nix
+#/etc/nix/nix.con
+builders = ssh-ng://deploy@wgpx?ssh-key=/var/root/.ssh/id_ed25519 x86_64-linux - 10 2 benchmark,big-parallel,kvm,nixos-test - -
+builders-use-substitutes = true
+```
+
+if you change /etc/nix/nix.conf you must restart the nix daemon:
+
+```nix
+sudo launchctl stop org.nixos.nix-daemon;
+sudo launchctl start org.nixos.nix-daemon;
+
+#or restart
+sudo launchctl kickstart -k system/org.nixos.nix-daemon
+````
+
+check if config ist applied to the daemon
+
+```sh
+nix show-config | rg '(max-jobs|system-features|builders) '
+```
+
+now try to build a package on the remote host with a different arch. max-jobs 0 will force you build remote.
+
+```sh
+nix build -vvvvv  --impure --expr '(with import <nixpkgs> { system = "x86_64-linux"; }; runCommand "foo" {} "uname > $out")' --max-jobs 0
+cat result
+```
+
+### macos darwin builder
+
+[doc](https://nixos.org/manual/nixpkgs/unstable/#sec-darwin-builder)
+
+```sh
+nix run nixpkgs#darwin.linux-builder # will ask sudo password
+```
+
+add this to the files
+
+```nix
+#/etc/nix/nix.conf
+builders = ssh-ng://builder@linux-builder x86_64-linux /etc/nix/builder_ed25519 10 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUF$
+builders-use-substitutes = true
+```
+
+```nix
+#sudo nano /etc/ssh/ssh_config.d/100-linux-builder.conf
+Host linux-builder
+  Hostname localhost
+  HostKeyAlias linux-builder
+  Port 31022
+```
+
+you can combine the local darwin builder wit a remote builder:
+
+```nix
+#/etc/nix/nix.conf
+builders = ssh-ng://deploy@wgpx?ssh-key=/var/root/.ssh/id_ed25519 x86_64-linux - 10 2 benchmark,big-parallel,kvm,nixos-test - - ; ssh-ng://builder@linux-builder x86_64-linux /etc/nix/builder_ed25519 10 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo=
+builders-use-substitutes = true
 ```
