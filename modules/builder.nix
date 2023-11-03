@@ -14,7 +14,7 @@ in {
       enable = mkEnableOption pkgDesc;
       hostname = mkOption {
         type = types.str;
-        default = false;
+        default = "";
         description =
           "allow to build on this host. it will create a build user.";
       };
@@ -25,17 +25,18 @@ in {
           "set the path to the private key to connect to the build host. default is the host key";
       };
       keys = mkOption {
+        type = types.listOf types.str;
         description = "ssh pub key for builder access";
       }; # only for server
     };
   };
   config = mkMerge [
-    (mkIf (cfg.enable && cfg.hostname) {
+    (mkIf (cfg.enable && (cfg.hostname != "")) {
       # client
       nix = {
         distributedBuilds = true;
         buildMachines = [{
-          hostName = cfg.server;
+          hostName = cfg.hostname;
           sshUser = "builder";
           sshKey = cfg.privKeyPath;
           system = "x86_64-linux"; # ["x86_64-linux" "aarch64-linux"];
@@ -52,17 +53,19 @@ in {
         # build-users-group = nixbld
       };
     })
-    (mkIf (cfg.enable && !cfg.hostname) {
+    (mkIf (cfg.enable && (cfg.hostname == "")) {
       # server
+      # todo: try to reduce privs
       users = {
         groups.builder = { };
         users.builder = {
-          isSystemUser = true;
+          isNormalUser = true;
           openssh.authorizedKeys.keys = cfg.keys;
           group = "builder";
           extraGroups = [ "nix" ];
         };
       };
+      nix.settings.trusted-users = [ "@builder" ];
     })
   ];
 

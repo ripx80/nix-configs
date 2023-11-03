@@ -21,6 +21,6 @@
   networking.firewall.enable = true;
   networking.enableIPv6 = false;
   boot.kernel.sysctl = { "net.ipv6.conf.all.disable_ipv6" = true; };
-  services.timesyncd.enable = true;
+  services.timesyncd.enable = lib.mkDefault true;
   # boot.kernelPackages = pkgs.linuxPackages_latest; # todo
 }
