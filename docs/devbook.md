@@ -18,16 +18,14 @@
 - [x] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/) with darwin builder
 - [x] (F) add: nixos build host (for ripmc)
 - [x] (F) add: headscale module
-
+- [x] (I) add: nixos module for distributed builds
 - [x] (T) test: finish desktop.nix, test all audio stuff
 - [x] (T) test: home-manager on mac if all working, use isDarwin from lib
 - [x] (T) change: compare home-manager desktop with nixos desktop
 
 - [ ] (B) fix: nixos vm on darwin has no internet connection
 
-- [ ] (I) add: nixos module for distributed builds
-
-- [ ] (F) add: nixos module for binary cache (substituters)
+- [ ] (F) add: nixos module for binary cache (substituters), use http
 - [ ] (F) add: nixos cache on wgpx
 
 - [ ] (I) add: offline builds for installed system [doc](https://linus.schreibt.jetzt/posts/include-build-dependencies.html), system.includeBuildDependencies
