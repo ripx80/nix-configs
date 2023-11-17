@@ -34,14 +34,15 @@ in {
       self.nixosModules.nix-configs
       home-manager.nixosModules.home-manager
       disko.nixosModules.disko
-    ], extraModules ? [ ], extraSpecialArgs ? { }, pubs ? pub, }:
+    ], extraModules ? [ ], extraSpecialArgs ? { }, pubs ? pub, usepkgs ? pkgs,
+    }:
     lib.nixosSystem {
       inherit system;
-      #nixpkgs.pkgs = self.pkgs.${system};
       modules = baseModules ++ hardwareModules ++ extraModules;
       specialArgs = {
         pub = pubs;
-        inherit pkgs inputs system; # use nixpkgs.unstable
+        pkgs = usepkgs;
+        inherit inputs system; # use nixpkgs.unstable
       } // extraSpecialArgs;
     };
 
