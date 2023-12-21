@@ -492,3 +492,7 @@ you can combine the local darwin builder wit a remote builder:
 builders = ssh-ng://deploy@wgpx?ssh-key=/var/root/.ssh/id_ed25519 x86_64-linux - 10 2 benchmark,big-parallel,kvm,nixos-test - - ; ssh-ng://builder@linux-builder x86_64-linux /etc/nix/builder_ed25519 10 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo=
 builders-use-substitutes = true
 ```
+
+## rust shell
+
+nix shell github:oxalica/rust-overlay

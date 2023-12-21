@@ -3,3 +3,4 @@ result*
 .direnv
 *.img
 *efi-vars.fd
+keys
