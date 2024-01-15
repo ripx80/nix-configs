@@ -126,6 +126,7 @@
               git-crypt
               lib.ripmod.mkiso
               lib.ripmod.nix-fmt
+              lib.ripmod.deploy-key
             ];
           };
         });

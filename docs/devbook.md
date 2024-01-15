@@ -28,6 +28,7 @@
 - [ ] (F) add: nixos module for binary cache (substituters), use http
 - [ ] (F) add: nixos cache on wgpx
 
+- [ ] (I) add: report of a complete configuration of nixos
 - [ ] (I) add: offline builds for installed system [doc](https://linus.schreibt.jetzt/posts/include-build-dependencies.html), system.includeBuildDependencies
 - [ ] (F) add: initrd wg module - include wireguard (client) and connect to wg server. so no static ip is needed to connect to. this key must be a different one and will be in a quarantine wg net
 
@@ -77,6 +78,7 @@
 
 ### Maybe
 
+- [ ] (F) add: paranoid server setup (module)
 - [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
 - [ ] (F) add: initrd - use dhcp address in combination with dhcp option
 - [ ] (I) change: add specialized autoinstall iso with a small size
@@ -496,3 +498,12 @@ builders-use-substitutes = true
 ## rust shell
 
 nix shell github:oxalica/rust-overlay
+
+## initrd luks
+
+```sh
+# example connect with user root as default
+ssh -p 2222 -i ~/secrets/deploy/id_ed25519 root@192.168.1.80
+# you will be asking for passphrase, if it is correct the normal boot process startet
+ssh -i ~/secrets/deploy/id_ed25519 deploy@192.168.1.80
+```

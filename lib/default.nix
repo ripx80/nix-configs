@@ -18,6 +18,27 @@ in {
   '';
   isDarwin = isDarwin;
   homePrefix = homePrefix;
+  deploy-key = pkgs.writeScriptBin "deploy-key" ''
+    #!${pkgs.stdenv.shell}
+    set -exo pipefail
+
+    if [ "$#" -eq 2 ]
+    then
+        DEPLOY_SECRETS="''${1}"
+        DEPLOY_HOST="''${2}"
+    fi
+
+    if [ -z ''${DEPLOY_SECRETS+x} ] || [ -z ''${DEPLOY_HOST+x} ]
+      then
+        echo "set the following env vars:"
+        echo "DEPLOY_SECRETS="
+        echo "DEPLOY_HOST="
+        echo "or use the command: deploy-key <secrets dir> <deploy host>"
+        exit 1
+    fi
+    scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ''${DEPLOY_SECRETS}/deploy/id_ed25519 ''${DEPLOY_SECRETS}/''${DEPLOY_HOST}/ssh_host_ed25519_key* deploy@''${DEPLOY_HOST}:~
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ''${DEPLOY_SECRETS}/deploy/id_ed25519 deploy@''${DEPLOY_HOST} -C "sudo install -m 0600 -o root -g root ~/ssh_host_ed25519_key* /etc/ssh/ && rm ~/ssh_host_ed25519_key* && sudo systemctl restart sshd"
+  '';
 
   # generate a base nixos configuration with the
   # specified overlays, hardware modules, and any extraModules applied
