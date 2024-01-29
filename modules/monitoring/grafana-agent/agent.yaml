@@ -38,8 +38,18 @@ logs:
               job: systemd-journal
               instance: ${HOSTNAME}
           relabel_configs:
+            # add label unit
             - source_labels: ["__journal__systemd_unit"]
               target_label: "unit"
+            # add label level (priority)
+            - source_labels: ["__journal_priority_keyword"]
+              target_label: "level"
+            # get timestamp
+            - source_labels: ["__journal_syslog_timestamp"]
+              target_label: "syslog_timestamp"
+            # add syslog ID
+            - source_labels: ["__journal_syslog_identifier"]
+              target_label: "syslog_identifier"
       clients:
         - url: ${GRAFANA_AGENT_URL_LOKI}
           basic_auth:
