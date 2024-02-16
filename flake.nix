@@ -229,7 +229,7 @@
           modules = [
             (import ./modules/disko { disks = [ "/dev/sda" ]; })
             ({ config, pkgs, lib, ... }: {
-              ripmod.autoinstall = lib.mkForce {
+              ripmod.autoinstall = lib.mkDefault {
                 enable = true;
                 autorun = false;
                 system =

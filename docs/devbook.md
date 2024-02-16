@@ -507,3 +507,10 @@ ssh -p 2222 -i ~/secrets/deploy/id_ed25519 root@192.168.1.80
 # you will be asking for passphrase, if it is correct the normal boot process startet
 ssh -i ~/secrets/deploy/id_ed25519 deploy@192.168.1.80
 ```
+
+## initrd emulation
+
+```sh
+nix-shell -p qemu
+qemu-system-x86_64 -kernel result/kernel -initrd result/initrd
+```

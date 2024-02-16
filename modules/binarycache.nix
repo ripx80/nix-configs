@@ -1,5 +1,6 @@
-/*
-        # do this in a extra module
+{ config, pkgs, lib, ... }:
+{ }
+/* # do this in a extra module
         # add binary cache (substituter)
         # trusted-substituters = ssh://192.168.1.80
         # substituters = ssh://192.168.1.80
@@ -37,7 +38,4 @@
         };
     };
 */
-
-
-
 

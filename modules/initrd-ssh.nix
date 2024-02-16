@@ -32,6 +32,10 @@
         or:
         zstd -d /nix/store/9wv6jn2y7qyy09wrm9qnghsa7vmbpraj-initrd-linux-6.1.38/initrd -c | cpio -i
 
+    run initrd with qemu-system
+
+        qemu-system-x86_64 -kernel result/kernel -initrd result/initrd
+
     some additional options to customize the initrd:
 
     extra config option to add files to initrd
@@ -78,6 +82,10 @@
         - https://github.com/NixOS/nixpkgs/blob/dbf6c323883ae7e00941f628e65bdd58b3660e9a/nixos/modules/system/boot/initrd-ssh.nix#L115
             hostKey they will remove the first char from file name
 
+        - there is a bug: if you set ssh.HostKey it will be overwritten if you set another secrets in initrd
+        - because of the implementation and the problematic rebuild i use a unrusted meta key here
+          its not a real secrets because it will expose in nix store and is readable if someone clone the repo and have the git-crypt keys.
+
     docs:
         - https://search.nixos.org/options?channel=22.11&show=boot.initrd.secrets&from=0&size=50&sort=relevance&type=packages&query=boot.initrd+
         - https://nixos.wiki/wiki/Full_Disk_Encryption
@@ -106,9 +114,24 @@ in {
         description = boot.initrd.authorizedKeys.description;
       };
       # dont use regular keys they are exposed in the nix store
+      # change to: types.package in the future
       hostKey = mkOption {
-        type = types.path;
-        description = boot.initrd.network.ssh.hostKeys.description;
+        type = types.str;
+        description = "ssh host key in initrd. this will be saved on a unencrypted boot disk and exposed in nix store";
+        #description = boot.initrd.network.ssh.hostKeys.description;
+      };
+      # dont use regular keys they are exposed in the nix store
+      # change to: types.package
+      wgConf = mkOption {
+        type = types.str;
+        description = "wireguard config file path";
+        default = "";
+      };
+
+      wgIp = mkOption {
+        type = types.str;
+        description = "wireguard client ip";
+        default = "";
       };
 
       kernelParams = mkOption {
@@ -121,51 +144,78 @@ in {
       };
     };
   };
-  config = mkIf cfg.enable {
 
-    boot = {
-      loader.grub.enableCryptodisk = true;
-      kernelParams = [ cfg.kernelParams ];
-      initrd = {
-        luks.forceLuksSupportInInitrd = true;
-        availableKernelModules = cfg.modules;
-        network = {
-          enable = true;
-          flushBeforeStage2 = true; # resets network config from kernel
-
-          /* postCommands:
-             will be executed before other stuff happens
-             use cases:
-               - /bin/bash             : rescue shell inside initrd
-               - chmod 0600 <ssh_key>  : set correct access rights on keys
-               - cryptsetup-askpass    : ask for a password when ssh user login
-               - ntpdate               : set time
-                echo "ntp: starting ntpdate"
-                echo "ntp   123/tcp" >> /etc/services
-                echo "ntp   123/udp" >> /etc/services
-                ntpdate 0.pool.ntp.org
-          */
-          postCommands = ''
-            echo 'cryptsetup-askpass' >> /root/.profile
-          '';
-          ssh = {
+  config = mkMerge [
+    (mkIf (cfg.enable) {
+      boot = {
+        loader.grub.enableCryptodisk = true;
+        kernelParams = [ cfg.kernelParams ];
+        initrd = {
+          luks.forceLuksSupportInInitrd = true;
+          kernelModules = cfg.modules;
+          network = {
             enable = true;
-            port = 2222;
-            authorizedKeys = cfg.pubKeys;
-            hostKeys = [ cfg.hostKey ];
-            # shell must be present on the system: public key error
-            #shell = "/bin/bash"; # default /bin/ash
+            flushBeforeStage2 = true; # flush interfaces
+            postCommands = ''
+                mkdir -p /etc/ssh/
+                # !attention: keys not safe here
+                echo "${cfg.hostKey}" >/etc/ssh/ssh_host_ed25519_key
+                chmod 0600 /etc/ssh/ssh_host_ed25519_key
+                #echo 'cryptsetup-askpass' >> /root/.profile
+            '';
+            ssh = {
+              enable = true;
+              port = 2222;
+              authorizedKeys = cfg.pubKeys;
+              ignoreEmptyHostKeys = true;
+              # need to set a fixed KeyExchange method because the mtu will be not enough with ssh jump hosts inside a wg connection.
+              # to avoid to set a lower mtu which can cause some problems we set a fixed method here.
+              # this must be set in the sshd config file of the system:
+              # KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+              extraConfig = ''
+                PubkeyAcceptedKeyTypes ssh-ed25519-cert-v01@openssh.com,ssh-ed25519
+              '';
+              shell = "/bin/cryptsetup-askpass";
+              # shell must be present on the system: public key error
+              #shell = "/bin/ash";
+            };
           };
         };
-        /* copy binarys to initrd, ipconfig is available
-           use cases:
-             extraUtilsCommands = ''
-               copy_bin_and_libs ${pkgs.bash}/bin/bash
-               copy_bin_and_libs ${pkgs.ntp}/bin/ntpdate
-             '';
-           copy_bin_and_libs ${pkgs.wireguard}/bin/wg
-        */
       };
-    };
-  };
+    })
+    (mkIf
+      (config.boot.initrd.network.enable && cfg.enable && (cfg.wgConf != "")) {
+        boot.initrd = {
+          kernelModules = [ "wireguard" ];
+          # copy binarys to initrd, ipconfig is available
+          # wireguard wg is a wrapper script, need the executable .wg-wrapped
+          extraUtilsCommands = ''
+            #copy_bin_and_libs ${pkgs.bash}/bin/bash
+            copy_bin_and_libs ${pkgs.iproute2}/bin/ip
+            copy_bin_and_libs ${pkgs.ntp}/bin/ntpdate
+            copy_bin_and_libs ${pkgs.wireguard-tools}/bin/.wg-wrapped
+            ln -sf $out/bin/.wg-wrapped $out/bin/wg
+          '';
+          network = {
+            postCommands = ''
+              # !attention: keys not safe here
+              echo "${cfg.wgConf}" >/etc/wg.conf
+
+              # use wg10 here because the interface persists after the system boots
+              # dont use wg10 in your normal config
+
+              ip link add dev wg10 type wireguard
+              ip address add dev wg10 ${cfg.wgIp}
+              # mtu can made a lot of problems. check that all your wg interfaces has the same mtu size
+              # this can should end in connection problems like ssh.
+              # some isp has a smaller mtu like 1460. the mtu must be adjusted.
+              ip link set mtu 1380 dev wg10
+
+              wg setconf wg10 /etc/wg.conf
+              ip link set up dev wg10
+            '';
+          };
+        };
+      })
+  ];
 }
