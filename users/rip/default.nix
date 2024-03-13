@@ -18,7 +18,7 @@ in {
         ++ pkgs.lib.optionals config.programs.wireshark.enable [ "wireshark" ];
       shell = pkgs.bash;
       openssh.authorizedKeys.keys = pub.rip;
-      passwordFile = "/run/secrets/rip";
+      hashedPasswordFile = "/run/secrets/rip";
     };
   } else {
     rip = {

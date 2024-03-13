@@ -3,7 +3,7 @@
   stateVersion = if builtins.hasAttr "nixosConfig" specialArgs then
     specialArgs.nixosConfig.system.stateVersion
   else
-    "23.05"; # todo as argu
+    "23.11"; # todo as argu
 in {
   imports = [ ./desktop.nix ]; # todo
   config = {

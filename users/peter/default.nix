@@ -15,7 +15,7 @@ in {
       extraGroups = [ "video" "audio" "tty" "input" "users" ];
       shell = pkgs.bash;
       #openssh.authorizedKeys.keys = pub.rip;
-      #passwordFile = "/run/secrets/rip";
+      #hashedPasswordFile = "/run/secrets/rip";
     };
   } else {
     # nixDarwin has no config options
