@@ -5,7 +5,7 @@ server:
 metrics:
   wal_directory: /tmp/wal
   global:
-    scrape_interval: 5s
+    scrape_interval: 10s
     remote_write:
       - url: ${GRAFANA_AGENT_URL}
         basic_auth:

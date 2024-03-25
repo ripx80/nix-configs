@@ -48,5 +48,6 @@ in {
       pubkeyAcceptedKeyTypes = [ "ssh-ed25519" ];
       knownHosts = cfg.knownHosts;
     };
+    services.openssh.openFirewall = false;
   };
 }
