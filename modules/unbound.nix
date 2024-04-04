@@ -38,6 +38,12 @@ in {
         default = "";
         description = "add additional includes here";
       };
+
+      log-queries = mkOption {
+        type = types.bool;
+        default = false;
+        description = "log queries via systemd";
+      };
     };
   };
   config = mkIf cfg.enable {
@@ -75,7 +81,7 @@ in {
 
           val-log-level = 1;
           use-syslog = true; # queries will be shipped
-          log-queries = false;
+          log-queries = cfg.log-queries;
           #logfile = "/var/lib/unbound/unbound.log";
 
           cache-min-ttl = 1800;

@@ -2,7 +2,7 @@
     options listed here:
     https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/virtualisation/qemu-vm.nix
 */
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, ... }:
 with lib; {
   #   imports = [
   #     #"${inputs.nixpkgs}/nixos/modules/profiles/qemu-guest.nix"
@@ -52,8 +52,9 @@ with lib; {
   services.timesyncd.enable = mkForce false;
 
   #boot.growPartition = true;
+  networking.interfaces.eth0.useDHCP = lib.mkForce true; # needed to connect via localhost 2222
 
-  networking = { interfaces = mkForce { eth0.useDHCP = true; }; }; # needed?
+  #networking = { interfaces = mkForce { eth0.useDHCP = true; }; }; # needed?,
 
   # desktop
   #     environment.systemPackages = with pkgs; [
