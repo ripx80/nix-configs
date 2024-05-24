@@ -49,7 +49,7 @@
           pip = let
             python = pkgs.python3;
             pypackages = python.withPackages
-              (p: with p; [ requests virtualenv pip setuptools ]);
+              (p: with p; [ requests virtualenv pip pipx setuptools ]);
           in pkgs.mkShell {
             packages = [ pypackages pkgs.readline ];
             shellHook = ''

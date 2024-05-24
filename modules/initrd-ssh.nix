@@ -117,7 +117,8 @@ in {
       # change to: types.package in the future
       hostKey = mkOption {
         type = types.str;
-        description = "ssh host key in initrd. this will be saved on a unencrypted boot disk and exposed in nix store";
+        description =
+          "ssh host key in initrd. this will be saved on a unencrypted boot disk and exposed in nix store";
         #description = boot.initrd.network.ssh.hostKeys.description;
       };
       # dont use regular keys they are exposed in the nix store
@@ -157,11 +158,11 @@ in {
             enable = true;
             flushBeforeStage2 = true; # flush interfaces
             postCommands = ''
-                mkdir -p /etc/ssh/
-                # !attention: keys not safe here
-                echo "${cfg.hostKey}" >/etc/ssh/ssh_host_ed25519_key
-                chmod 0600 /etc/ssh/ssh_host_ed25519_key
-                #echo 'cryptsetup-askpass' >> /root/.profile
+              mkdir -p /etc/ssh/
+              # !attention: keys not safe here
+              echo "${cfg.hostKey}" >/etc/ssh/ssh_host_ed25519_key
+              chmod 0600 /etc/ssh/ssh_host_ed25519_key
+              #echo 'cryptsetup-askpass' >> /root/.profile
             '';
             ssh = {
               enable = true;

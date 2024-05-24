@@ -19,15 +19,14 @@ in {
         KbdInteractiveAuthentication = false;
         X11Forwarding = false;
         # dont change KexAlgorithms, because this effect the initrd sshd_config
-      /*
-        "ecdh-sha2-nistp521"
-        "ecdh-sha2-nistp384"
-        "ecdh-sha2-nistp256"
-      */
-      KexAlgorithms = [
-        "curve25519-sha256@libssh.org"
-        "diffie-hellman-group-exchange-sha256"
-      ];
+        /* "ecdh-sha2-nistp521"
+           "ecdh-sha2-nistp384"
+           "ecdh-sha2-nistp256"
+        */
+        KexAlgorithms = [
+          "curve25519-sha256@libssh.org"
+          "diffie-hellman-group-exchange-sha256"
+        ];
 
         #Ciphers = [];
 

@@ -1,36 +1,43 @@
 # Devbook
 
+## v0.3 - monitoring
+
+### add
+
+- [ ] (I) change: to new disko [layout](https://github.com/nix-community/disko#sample-configuration-and-cli-command)
+- [ ] (F) add: monitoring server, prometheus, grafana, loki module
+- [ ] (F) add: monitoring server, influxdb module
+- [ ] (F) add: monitoring client telegraf module
+
 ## v0.2 - autoinstall and luks
 
 ### add
 
 - [x] (I) add: autoinstall use github access tokens as default
-- [x] (I) change: update to nixos 23.05 release
 - [x] (I) add: offline builds to isoinstall, available with install-system and the autoinstall.system option
 - [x] (F) add: disko paritioning to autoinstall
 - [x] (F) add: luks disk encryption with disko
-- [x] (I) change: seperate repos: nix-configs (general), nix-secrets (private), nix-hosts
 - [x] (F) add: sshd initrd encryption keys
-- [x] (I) change: base nodocumentation on system
-- [x] (R) remove: delete old hardware-configuration, transfer to gist
-- [x] (I) change: modules to real nixos modules
 - [x] (I) add: default ripx80 grub splash image everywhere
 - [x] (F) add: macos build [vm](https://www.tweag.io/blog/2023-02-09-nixos-vm-on-macos/) with darwin builder
 - [x] (F) add: nixos build host (for ripmc)
 - [x] (F) add: headscale module
 - [x] (I) add: nixos module for distributed builds
+- [x] (F) add: initrd wg module - include wireguard (client) and connect to wg server. so no static ip is needed to connect to. this key must be a different one and will be in a quarantine wg
 - [x] (T) test: finish desktop.nix, test all audio stuff
 - [x] (T) test: home-manager on mac if all working, use isDarwin from lib
+
+### change
+
+- [x] (I) change: base nodocumentation on system
+- [x] (I) change: modules to real nixos modules
 - [x] (T) change: compare home-manager desktop with nixos desktop
+- [x] (I) change: seperate repos: nix-configs (general), nix-secrets (private), nix-hosts
+- [x] (I) change: update to nixos 23.05 release
 
-- [ ] (B) fix: nixos vm on darwin has no internet connection
+### remove
 
-- [ ] (F) add: nixos module for binary cache (substituters), use http
-- [ ] (F) add: nixos cache on wgpx
-
-- [ ] (I) add: report of a complete configuration of nixos
-- [ ] (I) add: offline builds for installed system [doc](https://linus.schreibt.jetzt/posts/include-build-dependencies.html), system.includeBuildDependencies
-- [ ] (F) add: initrd wg module - include wireguard (client) and connect to wg server. so no static ip is needed to connect to. this key must be a different one and will be in a quarantine wg net
+- [x] (R) remove: delete old hardware-configuration, transfer to gist
 
 ## v0.1 - flakes
 
@@ -61,10 +68,6 @@
 - [x] paladin to flakes module
 - [x] nix-darwin
 
-### remove
-
-- [x] ops dir and meta configuration
-
 ### change
 
 - [x] (I) - update autoinstall
@@ -76,8 +79,17 @@
 - [x] restruct user to a generic version
 - [x] overlays and inputs
 
-### Maybe
+### remove
 
+- [x] ops dir and meta configuration
+
+## Maybe
+
+- [ ] (I) add: report of a complete configuration of nixos
+- [ ] (I) add: offline builds for installed system [doc](https://linus.schreibt.jetzt/posts/include-build-dependencies.html), system.includeBuildDependencies
+net
+- [ ] (B) fix: nixos vm on darwin has no internet connection
+- [ ] (F) add: nixos module for binary cache (substituters), use http
 - [ ] (F) add: paranoid server setup (module)
 - [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
 - [ ] (F) add: initrd - use dhcp address in combination with dhcp option
