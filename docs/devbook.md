@@ -1,5 +1,8 @@
 # Devbook
 
+keep in mind: this is the underlying lib
+think: in respect of the crisis in the nix community, keep things out of nix like fw scripts to switch to another os.
+
 ## v0.3 - monitoring
 
 ### add
@@ -8,6 +11,7 @@
 - [ ] (F) add: monitoring server, prometheus, grafana, loki module
 - [ ] (F) add: monitoring server, influxdb module
 - [ ] (F) add: monitoring client telegraf module
+- [ ] (F) change: decouple nix/nixos things from configurations (to switch in the future)
 
 ## v0.2 - autoinstall and luks
 
