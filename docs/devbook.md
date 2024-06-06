@@ -96,7 +96,6 @@ net
 - [ ] (F) add: nixos module for binary cache (substituters), use http
 - [ ] (F) add: paranoid server setup (module)
 - [ ] (F) add: tpm - need secure boot to protect: comming soon from the nix community
-- [ ] (F) add: initrd - use dhcp address in combination with dhcp option
 - [ ] (I) change: add specialized autoinstall iso with a small size
 - [ ] (I) change: restructure flake outputs in seperate files
 - [ ] (I) change: to new password hashes with mkpasswd
