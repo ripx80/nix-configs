@@ -86,6 +86,10 @@ in {
           # generate luks keys
           echo -n "${cfg.secretKey}" > /root/secret.key
 
+          # echo "partition disks..."
+          # will umount, format, mount disks
+          # disko
+
           echo "Formatting disks..."
           disko-format
 
