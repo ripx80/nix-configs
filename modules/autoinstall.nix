@@ -60,11 +60,15 @@ in {
             set -euo pipefail
             # generate luks keys
             echo -n "${cfg.secretKey}" > /root/secret.key
-            echo "Formatting disks..."
-            disko-format
+            # will umount, format, mount disks
+            echo "partition disks..."
+            disko
 
-            echo "Mounting disks..."
-            disko-mount
+            # echo "Formatting disks..."
+            # disko-format
+
+            # echo "Mounting disks..."
+            # disko-mount
 
             echo "Installing system..."
             ${config.system.build.nixos-install}/bin/nixos-install \
@@ -86,15 +90,15 @@ in {
           # generate luks keys
           echo -n "${cfg.secretKey}" > /root/secret.key
 
-          # echo "partition disks..."
           # will umount, format, mount disks
-          # disko
+          echo "partition disks..."
+          disko
 
-          echo "Formatting disks..."
-          disko-format
+          # echo "Formatting disks..."
+          # disko-format
 
-          echo "Mounting disks..."
-          disko-mount
+          # echo "Mounting disks..."
+          # disko-mount
 
           echo "Installing system..."
           nixos-install --system ${cfg.system} \
