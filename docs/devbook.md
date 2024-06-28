@@ -7,11 +7,14 @@ think: in respect of the crisis in the nix community, keep things out of nix lik
 
 ### add
 
-- [ ] (I) change: to new disko [layout](https://github.com/nix-community/disko#sample-configuration-and-cli-command)
 - [ ] (F) add: monitoring server, prometheus, grafana, loki module
 - [ ] (F) add: monitoring server, influxdb module
 - [ ] (F) add: monitoring client telegraf module
+
+### change
+
 - [ ] (F) change: decouple nix/nixos things from configurations (to switch in the future)
+- [x] (I) change: to new disko [layout](https://github.com/nix-community/disko#sample-configuration-and-cli-command)
 
 ## v0.2 - autoinstall and luks
 
