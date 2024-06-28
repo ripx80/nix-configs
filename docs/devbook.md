@@ -406,7 +406,7 @@ nix flake lock --update-input nixpkgs --update-input nix
 #   config = { config, ... }: let
 #    inherit pkgs;
 #    in {
-#     system.stateVersion = "23.04";
+#     system.stateVersion = "24.05";
 #     environment.etc."resolv.conf".text = "nameserver 8.8.8.8";
 #     networking.firewall = {
 #       enable = true;

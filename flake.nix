@@ -2,11 +2,11 @@
   description = "rip's nixos flakes";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
       #url = "github:nix-community/home-manager"; # unstable
       #inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -21,7 +21,7 @@
   outputs =
     { self, nixpkgs, nixpkgs-unstable, home-manager, disko, ... }@inputs:
     let
-      stateVersion = "23.11";
+      stateVersion = "24.05";
       version = builtins.substring 0 8 self.lastModifiedDate;
 
       # Helper generating outputs for each supported system

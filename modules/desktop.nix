@@ -46,12 +46,15 @@ in {
       displayManager.startx.enable = true;
       autorun = false;
       exportConfiguration = true;
-      layout = "de";
-      xkbVariant = "nodeadkeys";
-      xkbOptions = "";
-      # Enable touchpad support.
-      libinput.enable = true;
+      xkb = {
+        variant = "nodeadkeys";
+        options = "";
+        layout= "de";
+      };
+
     };
+    # Enable touchpad support.
+    services.libinput.enable = true;
   };
 }
 
