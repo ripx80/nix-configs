@@ -16,7 +16,7 @@ in
   config = mkIf cfg.enable {
     home = {
       packages = with pkgs; [ alacritty ];
-      file.".config/alacritty/alacritty.yml".source = ./alacritty.yml;
+      file.".config/alacritty/alacritty.toml".source = ./alacritty.toml;
     };
   };
 }
