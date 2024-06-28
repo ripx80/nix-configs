@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
@@ -22,8 +27,8 @@ let
     #``````````````/`````\\`````````/
     #``````````````\\______\\_______/
   '';
-
-in {
+in
+{
   options = {
     ripmod.banner = {
       enable = mkEnableOption pkgDesc;

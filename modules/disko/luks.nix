@@ -3,12 +3,17 @@
 # sgdisk -c 2:disk-disk0-luks /dev/vda
 # sgdisk -c 3:disk-disk0-swap /dev/vda
 
-/* docs:
-    - https://nixos.wiki/wiki/Full_Disk_Encryption
-    - https://shen.hong.io/installing-nixos-with-encrypted-root-partition-and-seperate-boot-partition/
+/*
+  docs:
+   - https://nixos.wiki/wiki/Full_Disk_Encryption
+   - https://shen.hong.io/installing-nixos-with-encrypted-root-partition-and-seperate-boot-partition/
 */
 
-{ disks ? [ "/dev/sda" ], ... }: {
+{
+  disks ? [ "/dev/sda" ],
+  ...
+}:
+{
   disko.devices = {
     disk.disk0 = {
       device = builtins.elemAt disks 0;
@@ -16,79 +21,94 @@
       content = {
         type = "gpt";
         partitions = {
-            ESP = {
-                type = "EF00";
-                #start = "0";
-                size = "512M";
-                #end = "512MiB"; # 512Mib #128MiB
-                priority = 1;
-                    content = {
-                    type = "filesystem";
-                    format = "vfat";
-                    mountpoint = "/boot";
-                    mountOptions = [ "defaults" "noatime" ];
-                    };
-            };
-            luks = {
-                #start = "512MiB";
-                end = "-2GiB";
-                priority = 2;
-                content = {
-                    type = "luks";
-                    name = "crypt";
-                    settings = {
-                        keyFile =
-                        "/root/secret.key"; # dd if=/dev/urandom of=./keyfile0.bin bs=1024 count=4, this will be used by autoinstall and then in the config of the installed system
-                        fallbackToPassword = true; # allow to type in the password
-                    };
-
-                    initrdUnlock = true;
-
-                    # default command
-                    # cryptsetup --type luks2 --cipher aes-xts-plain64 --hash sha256 --iter-time 2000 --key-size 256 --pbkdf argon2id --use-urandom --verify-passphrase luksFormat device
-                    extraFormatArgs = [ "--key-size 512" "--hash sha512" ];
-                    extraOpenArgs = [
-                        "--allow-discards"
-                    ]; # this has security implifications on luks
-                    content = {
-                        type = "btrfs";
-                        extraArgs = [ "-f" ]; # Override existing partition
-                        mountOptions = [
-                        "defaults"
-                        "discard=async"
-                        "ssd"
-                        "space_cache=v2"
-                        "lazytime"
-                        ];
-                        subvolumes = {
-                        "/__active" = {};
-                        "/__snapshot" = {};
-                        "/__active/root" = {
-                            mountpoint = "/";
-                            mountOptions = [ "compress=zstd" "noatime" "autodefrag" ];
-                        };
-                        "/__active/home" = {
-                            mountpoint = "/home";
-                            mountOptions = [ "compress=zstd" "noatime" "autodefrag" ];
-                        };
-                        "/__active/nix" = {
-                            mountpoint = "/nix";
-                            mountOptions = [ "compress=zstd" "noatime" "autodefrag" ];
-                        };
-                        };
-                    };
-                };
-            };
-            swap = {
-                start = "-2GiB";
-                #end = "100%";
-                priority = 3;
-                content = {
-                    type = "swap";
-                    randomEncryption = true;
-                };
+          ESP = {
+            type = "EF00";
+            #start = "0";
+            size = "512M";
+            #end = "512MiB"; # 512Mib #128MiB
+            priority = 1;
+            content = {
+              type = "filesystem";
+              format = "vfat";
+              mountpoint = "/boot";
+              mountOptions = [
+                "defaults"
+                "noatime"
+              ];
             };
           };
+          luks = {
+            #start = "512MiB";
+            end = "-2GiB";
+            priority = 2;
+            content = {
+              type = "luks";
+              name = "crypt";
+              settings = {
+                keyFile = "/root/secret.key"; # dd if=/dev/urandom of=./keyfile0.bin bs=1024 count=4, this will be used by autoinstall and then in the config of the installed system
+                fallbackToPassword = true; # allow to type in the password
+              };
+
+              initrdUnlock = true;
+
+              # default command
+              # cryptsetup --type luks2 --cipher aes-xts-plain64 --hash sha256 --iter-time 2000 --key-size 256 --pbkdf argon2id --use-urandom --verify-passphrase luksFormat device
+              extraFormatArgs = [
+                "--key-size 512"
+                "--hash sha512"
+              ];
+              extraOpenArgs = [ "--allow-discards" ]; # this has security implifications on luks
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-f" ]; # Override existing partition
+                mountOptions = [
+                  "defaults"
+                  "discard=async"
+                  "ssd"
+                  "space_cache=v2"
+                  "lazytime"
+                ];
+                subvolumes = {
+                  "/__active" = { };
+                  "/__snapshot" = { };
+                  "/__active/root" = {
+                    mountpoint = "/";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                      "autodefrag"
+                    ];
+                  };
+                  "/__active/home" = {
+                    mountpoint = "/home";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                      "autodefrag"
+                    ];
+                  };
+                  "/__active/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [
+                      "compress=zstd"
+                      "noatime"
+                      "autodefrag"
+                    ];
+                  };
+                };
+              };
+            };
+          };
+          swap = {
+            start = "-2GiB";
+            #end = "100%";
+            priority = 3;
+            content = {
+              type = "swap";
+              randomEncryption = true;
+            };
+          };
+        };
       };
     };
     nodev = {

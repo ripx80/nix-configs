@@ -1,9 +1,16 @@
-/* generic virtualisation configs without bootloader
-    options listed here:
-    https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/virtualisation/qemu-vm.nix
+/*
+  generic virtualisation configs without bootloader
+   options listed here:
+   https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/virtualisation/qemu-vm.nix
 */
-{ config, pkgs, lib, ... }:
-with lib; {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib;
+{
   #   imports = [
   #     #"${inputs.nixpkgs}/nixos/modules/profiles/qemu-guest.nix"
   #     "${inputs.nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix" # disable if you use vmVariant
@@ -15,16 +22,17 @@ with lib; {
 
   # this will import qemu-vm.nix instead
   virtualisation.vmVariant.virtualisation = {
-    graphics = lib.mkForce
-      false; # Make VM output to the terminal instead of a separate window
+    graphics = lib.mkForce false; # Make VM output to the terminal instead of a separate window
     diskSize = 10000; # MB
     memorySize = 4096; # MB
     cores = 4;
-    forwardPorts = [{
-      from = "host";
-      host.port = 2222;
-      guest.port = 22;
-    }];
+    forwardPorts = [
+      {
+        from = "host";
+        host.port = 2222;
+        guest.port = 22;
+      }
+    ];
     qemu = {
       options = [
         "-cpu kvm64"
@@ -52,8 +60,7 @@ with lib; {
   services.timesyncd.enable = mkForce false;
 
   #boot.growPartition = true;
-  networking.interfaces.eth0.useDHCP =
-    lib.mkForce true; # needed to connect via localhost 2222
+  networking.interfaces.eth0.useDHCP = lib.mkForce true; # needed to connect via localhost 2222
 
   #networking = { interfaces = mkForce { eth0.useDHCP = true; }; }; # needed?,
 

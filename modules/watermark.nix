@@ -1,10 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
   cfg = config.ripmod.watermark;
   pkgDesc = "watermark service";
-in {
+in
+{
   options = {
     ripmod.watermark = {
       enable = mkEnableOption pkgDesc;
@@ -35,8 +41,7 @@ in {
       logfile = mkOption {
         type = types.path;
         default = "/tmp/watermark.log";
-        description =
-          "path to logfile to track which files are deleted: default /tmp/watermark.log";
+        description = "path to logfile to track which files are deleted: default /tmp/watermark.log";
       };
     };
   };
@@ -56,14 +61,10 @@ in {
       script = ''
         #!${pkgs.stdenv.shell}
 
-        if [ $(df -P ${cfg.disk} | /run/current-system/sw/bin/awk '{ gsub("%",""); capacity = $5 }; END { print capacity }') -gt ${
-          toString (cfg.percent)
-        } ]
+        if [ $(df -P ${cfg.disk} | /run/current-system/sw/bin/awk '{ gsub("%",""); capacity = $5 }; END { print capacity }') -gt ${toString (cfg.percent)} ]
           then
             # will list all files and then delete the oldest
-            find ${cfg.dir} -mtime -1 -type f | grep -v '.log' | grep -v 'dump' | grep -v 'meta.json' | sort -k 4,5 | head -n${
-              toString (cfg.count)
-            } | tee -a ${cfg.logfile} | xargs rm
+            find ${cfg.dir} -mtime -1 -type f | grep -v '.log' | grep -v 'dump' | grep -v 'meta.json' | sort -k 4,5 | head -n${toString (cfg.count)} | tee -a ${cfg.logfile} | xargs rm
         fi
         exit 0
       '';

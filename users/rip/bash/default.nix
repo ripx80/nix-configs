@@ -1,10 +1,19 @@
-{ config, lib, pkgs, programs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  programs,
+  ...
+}:
 
 with lib;
-let cfg = config.ripmod.bash;
-
-in {
-  options = { ripmod.bash.enable = mkEnableOption "Bash"; };
+let
+  cfg = config.ripmod.bash;
+in
+{
+  options = {
+    ripmod.bash.enable = mkEnableOption "Bash";
+  };
   config = mkIf cfg.enable {
     home.file.".config/bash/vault.sh".source = ./vault.sh;
     home.file.".config/bash/alias.sh".source = ./alias.sh;
@@ -36,6 +45,5 @@ in {
         "extglob"
       ];
     };
-
   };
 }

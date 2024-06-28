@@ -1,8 +1,15 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 with lib;
-let cfg = config.ripmod.gui;
-in {
+let
+  cfg = config.ripmod.gui;
+in
+{
   imports = [
     ./openbox
     ./alacritty
@@ -31,8 +38,7 @@ in {
       neofetch.enable = true;
       keybase.enable = false; # enable if you needed
       keybase.gui = false;
-      wireshark.enable =
-        false; # home-manager not support programs.wireshark.enable = true;
+      wireshark.enable = false; # home-manager not support programs.wireshark.enable = true;
     };
     home.packages = with pkgs; [
       google-chrome

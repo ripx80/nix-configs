@@ -1,13 +1,23 @@
 # todo: not working
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
   cfg = config.ripmod.ignite;
   pkgDesc = "enable ignite toolkit";
-in {
+in
+{
 
-  options = { ripmod.ignite = { enable = mkEnableOption pkgDesc; }; };
+  options = {
+    ripmod.ignite = {
+      enable = mkEnableOption pkgDesc;
+    };
+  };
 
   config = mkIf cfg.enable {
     virtualisation.docker.enable = true;

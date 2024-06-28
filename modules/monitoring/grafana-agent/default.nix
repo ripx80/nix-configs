@@ -1,9 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.monitoring;
   pkgDesc = "enable grafana agent monitoring";
-in {
+in
+{
   options = {
     ripmod.monitoring = {
       enable = mkEnableOption "enable grafana agent monitoring service.";
@@ -57,8 +63,7 @@ in {
       serviceConfig = {
         User = "grafana";
         Restart = "always";
-        ExecStart = ''
-          ${pkgs.grafana-agent}/bin/grafana-agent --config.file=/etc/grafana-agent/agent.yaml --config.expand-env --server.http.address="127.0.0.1:9100"'';
+        ExecStart = ''${pkgs.grafana-agent}/bin/grafana-agent --config.file=/etc/grafana-agent/agent.yaml --config.expand-env --server.http.address="127.0.0.1:9100"'';
         EnvironmentFile = cfg.env;
       };
     };

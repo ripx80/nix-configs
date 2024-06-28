@@ -1,10 +1,20 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.podman;
   pkgDesc = "enable podman";
-in {
-  options = { ripmod.podman = { enable = mkEnableOption pkgDesc; }; };
+in
+{
+  options = {
+    ripmod.podman = {
+      enable = mkEnableOption pkgDesc;
+    };
+  };
   config = mkIf cfg.enable {
 
     virtualisation = {

@@ -1,26 +1,38 @@
-{ hardware, config, lib, pkgs, ... }:
+{
+  hardware,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.desktop;
   pkgDesc = "enables desktop env";
-in {
-  options = { ripmod.desktop = { enable = mkEnableOption pkgDesc; }; };
+in
+{
+  options = {
+    ripmod.desktop = {
+      enable = mkEnableOption pkgDesc;
+    };
+  };
   config = mkIf cfg.enable {
 
-    environment.systemPackages = with pkgs;
-      [
-        # input
-        #xorg.xf86inputevdev
-        #xorg.xf86inputsynaptics
-        xorg.xf86inputlibinput
-      ];
+    environment.systemPackages = with pkgs; [
+      # input
+      #xorg.xf86inputevdev
+      #xorg.xf86inputsynaptics
+      xorg.xf86inputlibinput
+    ];
 
     hardware = {
       pulseaudio = {
         enable = true;
         package = pkgs.pulseaudioFull;
         support32Bit = true;
-        daemon.config = { flat-volumes = "no"; };
+        daemon.config = {
+          flat-volumes = "no";
+        };
       };
 
       #DRI acceleration
@@ -35,7 +47,11 @@ in {
       bluetooth = {
         enable = true;
         # For Bose QC 35
-        settings = { General = { Enable = "Source,Sink,Media,Socket"; }; };
+        settings = {
+          General = {
+            Enable = "Source,Sink,Media,Socket";
+          };
+        };
       };
     };
 
@@ -49,9 +65,8 @@ in {
       xkb = {
         variant = "nodeadkeys";
         options = "";
-        layout= "de";
+        layout = "de";
       };
-
     };
     # Enable touchpad support.
     services.libinput.enable = true;

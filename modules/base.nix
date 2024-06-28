@@ -1,7 +1,13 @@
 # base configurations for the most configs
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
-with lib; {
+with lib;
+{
   config = {
     users.groups.nix = { }; # allowed to connect to nix-daemon, multiuser
     #boot.cleanTmpDir = true;
@@ -35,15 +41,19 @@ with lib; {
       # - access-tokens
       # - secret-key-files
       package = pkgs.nixFlakes;
-      extraOptions = (lib.optionalString (config.nix.package == pkgs.nixFlakes)
-        "experimental-features = nix-command flakes" + ''
+      extraOptions = (
+        lib.optionalString (
+          config.nix.package == pkgs.nixFlakes
+        ) "experimental-features = nix-command flakes"
+        + ''
 
           keep-derivations = true
           keep-outputs = true
 
           min-free = ${toString (100 * 1024 * 1024)}
           max-free = ${toString (1024 * 1024 * 1024)}
-        '');
+        ''
+      );
 
       gc = {
         automatic = true;
@@ -57,6 +67,8 @@ with lib; {
 
       #readOnlyStore = false;
     };
-    nixpkgs.config = { allowUnfree = true; };
+    nixpkgs.config = {
+      allowUnfree = true;
+    };
   };
 }

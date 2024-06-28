@@ -1,6 +1,12 @@
 final: _:
 let
-  whispercpp = { pkgs, lib, stdenv, fetchFromGitHub }:
+  whispercpp =
+    {
+      pkgs,
+      lib,
+      stdenv,
+      fetchFromGitHub,
+    }:
     with pkgs;
     stdenv.mkDerivation rec {
       name = "whispercpp";
@@ -31,12 +37,14 @@ let
       '';
 
       meta = with lib; {
-        description =
-          "High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model";
+        description = "High-performance inference of OpenAI's Whisper automatic speech recognition (ASR) model";
         license = licenses.mit;
         homepage = "https://github.com/ggerganov/whisper.cpp";
         maintainers = with maintainers; [ ripx80 ];
         platforms = platforms.all; # platforms.x86_64 ++ platforms.aarch64;
       };
     };
-in { whispercpp = final.callPackage whispercpp { }; }
+in
+{
+  whispercpp = final.callPackage whispercpp { };
+}

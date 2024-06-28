@@ -1,10 +1,16 @@
-{ config, pkgs, lib, unstable, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  unstable,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.tailscale;
   pkgDesc = "ripmod tailscale service";
-
-in {
+in
+{
   options = {
     ripmod.tailscale = {
       enable = mkEnableOption pkgDesc;
@@ -24,7 +30,6 @@ in {
         description = "enable autologin systemd oneshot service";
       };
     };
-
   };
   config = mkMerge [
     (mkIf cfg.enable {
@@ -38,8 +43,14 @@ in {
         description = "Automatic connection to Tailscale";
 
         # make sure tailscale is running before trying to connect to tailscale
-        after = [ "network-pre.target" "tailscale.service" ];
-        wants = [ "network-pre.target" "tailscale.service" ];
+        after = [
+          "network-pre.target"
+          "tailscale.service"
+        ];
+        wants = [
+          "network-pre.target"
+          "tailscale.service"
+        ];
         wantedBy = [ "multi-user.target" ];
 
         # set this service as a oneshot job

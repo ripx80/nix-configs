@@ -1,14 +1,21 @@
-/* add tests, only system or flake can be set
-    if flake is set, it will be used in the autorun service
-    if flake is not set system will be used
+/*
+  add tests, only system or flake can be set
+   if flake is set, it will be used in the autorun service
+   if flake is not set system will be used
 */
-{ config, lib, pkgs, pub, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  pub,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.autoinstall;
-  pkgDesc =
-    "autoinstall for flakes on vms or bare metal. will be wipe the current system";
-in {
+  pkgDesc = "autoinstall for flakes on vms or bare metal. will be wipe the current system";
+in
+{
   options.ripmod.autoinstall = {
     enable = mkEnableOption pkgDesc;
 
@@ -27,15 +34,13 @@ in {
             git+https://ripx80:$ACCESS@github.com/ripx80/nix-configs#minimal
             git+https://ripx80:<repo-token>@github.com/ripx80/nix-configs#minimal
       '';
-      description =
-        "absolute path to the flake with url. use a deployment key or a access token";
+      description = "absolute path to the flake with url. use a deployment key or a access token";
     };
 
     accessKey = mkOption {
       type = types.str;
       default = "";
-      description =
-        "ssh access key for private repo access. will be used to fetch the config";
+      description = "ssh access key for private repo access. will be used to fetch the config";
     };
 
     autorun = mkOption {
@@ -47,19 +52,51 @@ in {
     secretKey = mkOption {
       type = types.str;
       default = "password";
-      description =
-        "if you use luks encryption you can set your secret key here. this will be passed to cryptsetup";
+      description = "if you use luks encryption you can set your secret key here. this will be passed to cryptsetup";
     };
   };
 
   config = mkIf cfg.enable (mkMerge [
     (mkIf (cfg.flake != "") {
-      environment.systemPackages = let
-        # online flake repo installation
-        install-flake = pkgs.writeShellScriptBin "install-flake" ''
+      environment.systemPackages =
+        let
+          # online flake repo installation
+          install-flake = pkgs.writeShellScriptBin "install-flake" ''
+              set -euo pipefail
+              # generate luks keys
+              echo -n "${cfg.secretKey}" > /root/secret.key
+              # will umount, format, mount disks
+              echo "partition disks..."
+              disko
+
+              # echo "Formatting disks..."
+              # disko-format
+
+              # echo "Mounting disks..."
+              # disko-mount
+
+              echo "Installing system..."
+              ${config.system.build.nixos-install}/bin/nixos-install \
+            --flake ${cfg.flake} \
+            --no-root-passwd \
+            --cores 0
+
+              echo "Done!"
+          '';
+        in
+        [ install-flake ];
+    })
+    # offline build with included toplevel system
+    # be aware of your secrets they will be included here
+    (mkIf (cfg.system != null) {
+      environment.systemPackages =
+        let
+          install-system = pkgs.writeShellScriptBin "install-system" ''
             set -euo pipefail
+
             # generate luks keys
             echo -n "${cfg.secretKey}" > /root/secret.key
+
             # will umount, format, mount disks
             echo "partition disks..."
             disko
@@ -71,43 +108,14 @@ in {
             # disko-mount
 
             echo "Installing system..."
-            ${config.system.build.nixos-install}/bin/nixos-install \
-          --flake ${cfg.flake} \
-          --no-root-passwd \
-          --cores 0
+            nixos-install --system ${cfg.system} \
+            --no-root-passwd \
+            --cores 0
 
             echo "Done!"
-        '';
-      in [ install-flake ];
-    })
-    # offline build with included toplevel system
-    # be aware of your secrets they will be included here
-    (mkIf (cfg.system != null) {
-      environment.systemPackages = let
-        install-system = pkgs.writeShellScriptBin "install-system" ''
-          set -euo pipefail
-
-          # generate luks keys
-          echo -n "${cfg.secretKey}" > /root/secret.key
-
-          # will umount, format, mount disks
-          echo "partition disks..."
-          disko
-
-          # echo "Formatting disks..."
-          # disko-format
-
-          # echo "Mounting disks..."
-          # disko-mount
-
-          echo "Installing system..."
-          nixos-install --system ${cfg.system} \
-          --no-root-passwd \
-          --cores 0
-
-          echo "Done!"
-        '';
-      in [ install-system ];
+          '';
+        in
+        [ install-system ];
     })
     (mkIf (cfg.accessKey != "") {
       systemd.services.repo-access = {
@@ -132,25 +140,35 @@ in {
       };
     })
     ({
-      environment.systemPackages = let
-        disko =
-          pkgs.writeShellScriptBin "disko" "${config.system.build.diskoScript}";
-        disko-mount = pkgs.writeShellScriptBin "disko-mount"
-          "${config.system.build.mountScript}";
-        disko-format = pkgs.writeShellScriptBin "disko-format"
-          "${config.system.build.formatScript}";
-      in [ pkgs.git disko disko-mount disko-format ];
+      environment.systemPackages =
+        let
+          disko = pkgs.writeShellScriptBin "disko" "${config.system.build.diskoScript}";
+          disko-mount = pkgs.writeShellScriptBin "disko-mount" "${config.system.build.mountScript}";
+          disko-format = pkgs.writeShellScriptBin "disko-format" "${config.system.build.formatScript}";
+        in
+        [
+          pkgs.git
+          disko
+          disko-mount
+          disko-format
+        ];
 
-      disko.enableConfig = lib.mkForce
-        false; # we don't want to generate filesystem entries on this image
+      disko.enableConfig = lib.mkForce false; # we don't want to generate filesystem entries on this image
 
       systemd.services.autoinstall =
-        let cmd = if cfg.flake != "" then "install-flake" else "install-system";
-        in {
+        let
+          cmd = if cfg.flake != "" then "install-flake" else "install-system";
+        in
+        {
           enable = cfg.autorun;
           description = "bootstrap a nixos installation";
           wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" "network-online.target" "polkit.service" ];
+          after = [
+            "network.target"
+            "network-online.target"
+            "polkit.service"
+          ];
+          wants = [ "network-online.target" ];
           path = [ "/run/current-system/sw/" ];
           script = with pkgs; ''
               set -euo pipefail
@@ -165,8 +183,7 @@ in {
           };
           serviceConfig = {
             Type = "oneshot";
-            User =
-              "root"; # must be root, nixos-install create with mktemp files under /mnt/tmp.XXXXXXX
+            User = "root"; # must be root, nixos-install create with mktemp files under /mnt/tmp.XXXXXXX
           };
         };
     })

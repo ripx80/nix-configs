@@ -1,4 +1,11 @@
-{ config, pkgs, lib, pub, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  pub,
+  ...
+}:
+{
 
   ripmod = {
     hardware.enable = true;
@@ -14,13 +21,22 @@
   fileSystems."/mnt/stick" = {
     device = "/dev/sdc1";
     fsType = "auto";
-    options = [ "defaults" "user" "rw" "noauto" "uid=1000" "gid=100" ];
+    options = [
+      "defaults"
+      "user"
+      "rw"
+      "noauto"
+      "uid=1000"
+      "gid=100"
+    ];
   };
 
   environment.systemPackages = [ pkgs.nano ];
   networking.firewall.enable = true;
   networking.enableIPv6 = false;
-  boot.kernel.sysctl = { "net.ipv6.conf.all.disable_ipv6" = true; };
+  boot.kernel.sysctl = {
+    "net.ipv6.conf.all.disable_ipv6" = true;
+  };
   services.timesyncd.enable = lib.mkDefault true;
   # boot.kernelPackages = pkgs.linuxPackages_latest; # todo
 }

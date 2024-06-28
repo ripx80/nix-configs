@@ -1,9 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.ssh;
   pkgDesc = "enable sshd server with default settings";
-in {
+in
+{
   options = {
     ripmod.ssh = {
       enable = mkEnableOption pkgDesc;
@@ -19,9 +25,10 @@ in {
         KbdInteractiveAuthentication = false;
         X11Forwarding = false;
         # dont change KexAlgorithms, because this effect the initrd sshd_config
-        /* "ecdh-sha2-nistp521"
-           "ecdh-sha2-nistp384"
-           "ecdh-sha2-nistp256"
+        /*
+          "ecdh-sha2-nistp521"
+          "ecdh-sha2-nistp384"
+          "ecdh-sha2-nistp256"
         */
         KexAlgorithms = [
           "curve25519-sha256@libssh.org"
@@ -29,7 +36,6 @@ in {
         ];
 
         #Ciphers = [];
-
       };
       allowSFTP = true;
       extraConfig = ''
@@ -43,7 +49,10 @@ in {
     programs.ssh = {
       # mozilla recomended
       # ssh-ed25519-cert-v01@openssh.com,ssh-rsa-cert-v01@openssh.com,ssh-ed25519,ssh-rsa,ecdsa-sha2-nistp521-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,ecdsa-sha2-nistp256
-      hostKeyAlgorithms = [ "ssh-ed25519" "ssh-rsa" ];
+      hostKeyAlgorithms = [
+        "ssh-ed25519"
+        "ssh-rsa"
+      ];
       pubkeyAcceptedKeyTypes = [ "ssh-ed25519" ];
       knownHosts = cfg.knownHosts;
     };

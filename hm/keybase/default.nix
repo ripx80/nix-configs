@@ -1,8 +1,15 @@
-{ pkgs, config, lib, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 
 with lib;
-let cfg = config.ripmod.keybase;
-in {
+let
+  cfg = config.ripmod.keybase;
+in
+{
   options.ripmod.keybase = {
     enable = mkEnableOption "Enable keybase/kbfs support";
     gui = mkEnableOption "Enable keybase gui installation";

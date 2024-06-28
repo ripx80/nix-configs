@@ -1,9 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.virtualbox;
   pkgDesc = "enable virtualbox settings";
-in {
+in
+{
   options = {
     ripmod.virtualbox = {
       enable = mkEnableOption pkgDesc;

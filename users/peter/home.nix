@@ -1,11 +1,20 @@
-{ config, pkgs, lib, specialArgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  specialArgs,
+  ...
+}:
 with lib;
 let
-  #inherit (specialArgs) x11;
-in {
+in
+#inherit (specialArgs) x11;
+{
   imports = [
     ../../hm # default hm config
   ];
-  home.sessionVariables = { EDITOR = "nano"; };
+  home.sessionVariables = {
+    EDITOR = "nano";
+  };
   home.packages = with pkgs; [ unzip ];
 }

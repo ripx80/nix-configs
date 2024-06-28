@@ -1,11 +1,21 @@
 # todo: test
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.ripmod.smart;
   pkgDesc = "enable smart disk service";
-in {
-  options = { ripmod.smart = { enable = mkEnableOption pkgDesc; }; };
+in
+{
+  options = {
+    ripmod.smart = {
+      enable = mkEnableOption pkgDesc;
+    };
+  };
   config = mkIf cfg.enable {
 
     environment.systemPackages = with pkgs; [ smartmontools ];

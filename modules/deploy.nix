@@ -1,15 +1,20 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
   cfg = config.ripmod.deploy;
   pkgDesc = "enable deployment access";
-in {
+in
+{
   options = {
     ripmod.deploy = {
       enable = mkEnableOption pkgDesc;
-      keys =
-        mkOption { description = "your ssh pub key for deployment access"; };
+      keys = mkOption { description = "your ssh pub key for deployment access"; };
     };
   };
 
@@ -21,18 +26,25 @@ in {
         isNormalUser = true;
         openssh.authorizedKeys.keys = cfg.keys;
         group = "deploy";
-        extraGroups = [ "wheel" "nix" ];
+        extraGroups = [
+          "wheel"
+          "nix"
+        ];
       };
     };
     security.sudo = {
       execWheelOnly = true;
-      extraRules = [{
-        users = [ "deploy" ];
-        commands = [{
-          command = "ALL";
-          options = [ "NOPASSWD" ];
-        }];
-      }];
+      extraRules = [
+        {
+          users = [ "deploy" ];
+          commands = [
+            {
+              command = "ALL";
+              options = [ "NOPASSWD" ];
+            }
+          ];
+        }
+      ];
     };
   };
 }
