@@ -1,0 +1,42 @@
+# define this in your nixos config:
+
+# networking.nftables.ruleset = ''
+#   flush ruleset
+#   define ssh = { "wg0" }
+#   ${builtins.readFile ./minimal.nft}
+#'';
+
+table inet fw {
+
+    counter cnt_ssh {
+        comment "count ssh packets"
+    }
+
+    limit lim_ssh { rate over 10/minute }
+    limit lim_icmp { rate 10/second ; comment "no ping floods"}
+
+    set deny_v4 { type ipv4_addr ; flags dynamic, timeout ; timeout 5m ; comment "deny list of blocked ip addresses";}
+
+    chain rpfilter {
+        type filter hook prerouting priority mangle + 10; policy drop;
+        fib saddr . mark . iif oif exists accept comment "reverse path check"
+    }
+
+    chain input {
+        type filter hook input priority 0; policy drop;
+        iif lo accept comment "trusted interfaces"
+        ip saddr @deny_v4 drop comment "drop all from blocking list"
+        icmp type echo-request limit name lim_icmp accept comment "No ping floods and allow pings"
+        ct state vmap { invalid : drop, established : accept, related : accept, new : jump services, untracked : jump services }
+    }
+
+    chain output {
+        type filter hook output priority 0; policy drop;
+        ct state vmap { invalid : drop, established : accept, related : accept, new : accept, untracked : accept } comment "allow outgoing packages"
+    }
+
+    chain services {
+        iifname $ssh tcp dport 22 ct state new, untracked limit name lim_ssh update @deny_v4 { ip saddr } comment "limit ssh connection in time to blocking list"
+        iifname $ssh tcp dport 22 ct state new counter name cnt_ssh log prefix "[nftables] new ssh connection: " accept comment "allow, log, count new ssh connections"
+    }
+}
