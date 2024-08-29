@@ -5,7 +5,5 @@
   ...
 }:
 {
-  imports = [
-    ./ingress-ddos.nix
-  ];
+  imports = [ ./ingress-ddos.nix ];
 }

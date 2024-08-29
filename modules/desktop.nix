@@ -64,7 +64,7 @@ in
       exportConfiguration = true;
       xkb = {
         variant = "nodeadkeys";
-        options = "";
+        # options = "";
         layout = "de";
       };
     };

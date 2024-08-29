@@ -63,7 +63,8 @@ ${template0 SYSTEM}
 Kernel $alignr $kernel
 Host:$alignr$nodename
 Uptime $alignr $uptime
-#Temprature $alignr ${platform coretemp.0 temp 1}°C
+#Temprature $alignr ${apcupsd_temp}°C
+Battery $alignr ${battery_short BAT0}%
 
 # CPU
 ${template0 CPU}
@@ -104,8 +105,5 @@ ${execi 10 w | tail -n+3 | awk '{ print $1" "$2" "$3; }' }
 # HDD
 ${template0 HDD}
 ${template1 /}
-${template1 /var}
-${template1 /usr}
-${template1 /home}
 ${template1 /tmp}
 ]];

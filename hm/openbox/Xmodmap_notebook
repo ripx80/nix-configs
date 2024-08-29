@@ -1,0 +1,2 @@
+keycode 115 = XF86AudioRaiseVolume
+keycode 190 = XF86AudioMicMute

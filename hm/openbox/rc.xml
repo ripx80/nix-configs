@@ -355,6 +355,39 @@
                 <command>transset-df -a 0.30</command>
             </action>
         </keybind>
+        <!-- laptop functions -->
+        <!-- Keybindings for brightness control -->
+        <keybind key="XF86MonBrightnessDown">
+            <action name="Execute">
+                <command>brightnessctl set 5%- -d intel_backlight</command>
+            </action>
+        </keybind>
+        <keybind key="XF86MonBrightnessUp">
+            <action name="Execute">
+                <command>brightnessctl set 5%+ -d intel_backlight</command>
+            </action>
+        </keybind>
+        <!-- Keybindings for sound control -->
+        <keybind key="XF86AudioRaiseVolume">
+            <action name="Execute">
+                <command>amixer -q sset Master 5%+ unmute</command>
+            </action>
+        </keybind>
+        <keybind key="XF86AudioLowerVolume">
+            <action name="Execute">
+                <command>amixer -q sset Master 5%- unmute</command>
+            </action>
+        </keybind>
+        <keybind key="XF86AudioMute">
+            <action name="Execute">
+                <command>amixer -q sset Master toggle</command>
+            </action>
+        </keybind>
+        <keybind key="XF86AudioMicMute">
+            <action name="Execute">
+                <command>amixer -q sset Capture toggle</command>
+            </action>
+        </keybind>
     </keyboard>
     <mouse>
         <context name="Frame">
@@ -374,6 +407,10 @@
                 <action name="Unshade"/>
             </mousebind>
             <mousebind button="A-Right" action="Drag">
+                <action name="Resize"/>
+            </mousebind>
+            <!-- resize on touchpads alternative-->
+            <mousebind button="C-A-Left" action="Drag">
                 <action name="Resize"/>
             </mousebind>
             <mousebind button="A-Middle" action="Press">

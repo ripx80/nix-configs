@@ -47,7 +47,7 @@ in
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ''${DEPLOY_SECRETS}/deploy/id_ed25519 deploy@''${DEPLOY_HOST} -C "sudo install -m 0600 -o root -g root ~/ssh_host_ed25519_key* /etc/ssh/ && rm ~/ssh_host_ed25519_key* && sudo systemctl restart sshd"
   '';
 
-  genIPMask = a: b: a + ("/" + (toString b));  # generate <ip>/<prefix>
+  genIPMask = a: b: a + ("/" + (toString b)); # generate <ip>/<prefix>
   genIPPort = a: b: a + (":" + (toString b)); # generate <ip>:<port>
 
   # generate a base nixos configuration with the
