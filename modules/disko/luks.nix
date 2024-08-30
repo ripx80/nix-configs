@@ -45,7 +45,14 @@
               type = "luks";
               name = "crypt";
               settings = {
-                keyFile = "/root/secret.key"; # dd if=/dev/urandom of=./keyfile0.bin bs=1024 count=4, this will be used by autoinstall and then in the config of the installed system
+                keyFile = "/dev/sdb";
+                keyFileSize = 4096;
+                #keyFile = "/key/disk.key"; # dd if=/dev/urandom of=./keyfile0.bin bs=1024 count=4, this will be used by autoinstall and then in the config of the installed system
+                # preOpenCommands = ''
+                #     mkdir -m 0755 -p /key
+                #     sleep 2 # To make sure the usb key has been loaded
+                #     test -b /dev/sdb && mount -n -t vfat -o ro /dev/sdb /key || echo "no usb key found"
+                # '';
                 fallbackToPassword = true; # allow to type in the password
               };
 
