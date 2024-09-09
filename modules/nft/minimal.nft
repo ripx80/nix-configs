@@ -40,3 +40,27 @@ table inet fw {
         iifname $ssh tcp dport 22 ct state new counter name cnt_ssh log prefix "[nftables] new ssh connection: " accept comment "allow, log, count new ssh connections"
     }
 }
+
+table inet nat {
+    chain postrouting {
+        type nat hook postrouting priority 100; policy accept;
+    }
+}
+
+table inet routing {
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        ct state vmap { invalid : drop, established : accept, related : accept }
+    }
+}
+
+table ip nat {
+    chain prerouting {
+        type nat hook prerouting priority -100; policy accept;
+
+    }
+    chain postrouting {
+        type nat hook postrouting priority -100; policy accept;
+
+    }
+}

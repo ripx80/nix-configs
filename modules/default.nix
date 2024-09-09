@@ -30,5 +30,6 @@
     ./builder.nix
     ./nft
     ./games
+    ./virt
   ];
 }

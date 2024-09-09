@@ -109,6 +109,7 @@
     in
     {
       inherit lib;
+      # todo: import, not working at the moment
       nixosModules = {
         nix-configs = {
           imports = [ ./modules ];
@@ -169,7 +170,7 @@
               git-crypt
               lib.ripmod.mkiso
               lib.ripmod.nix-fmt
-              lib.ripmod.deploy-key
+              #lib.ripmod.deploy-key
             ];
           };
         }

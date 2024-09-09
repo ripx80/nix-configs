@@ -1,0 +1,17 @@
+# include this to the ruleset config
+# define virt_out = "<your output interface>"
+# route br0 traffic to internet and back
+
+table inet nat {
+    chain postrouting {
+        # type nat hook postrouting priority 100; policy accept;
+        iifname br0 oif $virt_out counter masquerade comment "allow containers, vm connecting to the internet"
+    }
+}
+table inet routing {
+    chain forward {
+        # br0 (container, vm) allow internet access
+        iifname br0 oif $virt_out counter accept comment "routing to internet"
+        iif $virt_out oifname br0 ct state related,established counter accept comment "allow responses from internet"
+    }
+}
