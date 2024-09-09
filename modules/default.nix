@@ -29,5 +29,6 @@
     ./net-local.nix
     ./builder.nix
     ./nft
+    ./games
   ];
 }
