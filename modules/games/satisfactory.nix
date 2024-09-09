@@ -70,6 +70,12 @@ in
       privateNetwork = true;
       hostBridge = "br0";
       localAddress = "192.168.178.11/24";
+      bindMounts = {
+        "/var/lib/satisfactory" = {
+        hostPath = "/var/lib/satisfactory";
+        isReadOnly = false;
+        };
+      };
       config =
         {
           config,
