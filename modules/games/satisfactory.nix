@@ -26,11 +26,11 @@ in
         description = "Beta channel to follow";
       };
 
-      address = lib.mkOption {
-        type = lib.types.str;
-        default = "0.0.0.0";
-        description = "Bind address";
-      };
+    #   address = lib.mkOption {
+    #     type = lib.types.str;
+    #     default = "0.0.0.0";
+    #     description = "Bind address";
+    #   };
 
       maxPlayers = lib.mkOption {
         type = lib.types.number;
@@ -98,13 +98,14 @@ in
             };
           };
 
-          users.users.satisfactory = {
+          users.users.container = {
             home = "/var/lib/satisfactory";
             createHome = true;
+            uid = 2000;
+            group = "container";
             isSystemUser = true;
-            group = "satisfactory";
-          };
-          users.groups.satisfactory = { };
+            };
+          users.groups.container = { };
 
           networking = {
             defaultGateway = "192.168.178.1";
@@ -123,7 +124,7 @@ in
                 validate \
                 +quit
 
-                ${pkgs.patchelf}/bin/patchelf --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/UnrealServer-Linux-Shipping
+                ${pkgs.patchelf}/bin/patchelf --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/FactoryServer-Linux-Shipping
                 ln -sfv /var/lib/satisfactory/.steam/steam/linux64 /var/lib/satisfactory/.steam/sdk64
                 mkdir -p /var/lib/satisfactory/SatisfactoryDedicatedServer/FactoryGame/Saved/Config/LinuxServer
                 ${pkgs.crudini}/bin/crudini --set /var/lib/satisfactory/SatisfactoryDedicatedServer/FactoryGame/Saved/Config/LinuxServer/Game.ini '/Script/Engine.GameSession' MaxPlayers ${toString cfg.maxPlayers}
@@ -134,14 +135,14 @@ in
                   if cfg.autoSaveOnDisconnect then "True" else "False"
                 }
             '';
-
+            #/var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/UnrealServer-Linux-Shipping FactoryGame -multihome=${cfg.address}
             script = ''
-              /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/UnrealServer-Linux-Shipping FactoryGame -multihome=${cfg.address}
+              /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/FactoryServer-Linux-Shipping FactoryGame
             '';
             serviceConfig = {
               Restart = "always";
-              User = "satisfactory";
-              Group = "satisfactory";
+              User = "container";
+              Group = "container";
               WorkingDirectory = "/var/lib/satisfactory";
             };
             environment = {
