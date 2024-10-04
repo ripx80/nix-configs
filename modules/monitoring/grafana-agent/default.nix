@@ -38,13 +38,17 @@ in
       users.grafana = {
         isSystemUser = true;
         group = "grafana";
-        extraGroups = [ "systemd-journal" ];
+        extraGroups = [
+          "systemd-journal"
+          "nginx"
+        ]; # add nginx or other daemons here
         # need access to
         # /tmp/wal
         # /tmp/positions.yaml
         # /var/log/*log
         # /var/log/journal
         # /etc/grafana-agent/agent.yaml
+        # other logs to include
       };
     };
 
@@ -61,6 +65,9 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
+      environment = {
+        HOSTNAME = config.networking.hostName;
+      };
       serviceConfig = {
         User = "grafana";
         Restart = "always";

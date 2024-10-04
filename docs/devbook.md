@@ -7,13 +7,19 @@ think: in respect of the crisis in the nix community, keep things out of nix lik
 
 ### add
 
-- [ ] (F) add: monitoring server, prometheus, grafana, loki module
-- [ ] (F) add: monitoring server, influxdb module
-- [ ] (F) add: monitoring client telegraf module
+- [x] (F) add: monitoring server
+  - [x] prometheus
+  - [x] grafana
+  - [x] loki module
+- [x] self signed ca
+  - [x] system trusted ca
+  - [x] host certificates
+- [x] (F) add: nginx reverse proxy
+  - [x] nginx ssl offload
+  - [x] nginx hardening: tls1.3 only, ciphers
 
 ### change
 
-- [ ] (F) change: decouple nix/nixos things from configurations (to switch in the future)
 - [x] (I) change: to new disko [layout](https://github.com/nix-community/disko#sample-configuration-and-cli-command)
 
 ## v0.2 - autoinstall and luks
@@ -91,6 +97,28 @@ think: in respect of the crisis in the nix community, keep things out of nix lik
 - [x] ops dir and meta configuration
 
 ## Maybe
+
+monitoring
+
+- [ ] (F) add: container around the services
+- [ ] (I) change: grafana-agent to grafana alloy, (grafana-agent: October 31, 2025 end of live)
+- [ ] (I) change: logrotate config, nginx aso
+- [ ] (I) add: alerts
+  - [ ] make alerting optional
+  - [x] discord
+  - [ ] simple template with context
+  - [ ] if no metrics send anymore
+  - [ ] if cert expire
+  - [ ] if nginx request rate
+  - [ ] if cpu usage
+  - [ ] if ram usage
+  - [ ] if disk usage
+  - [ ] if network usage
+- [ ] dashboards
+  - [ ] simple nodes
+  - [ ] simple nginx
+  - [ ] simple ssh login
+  - [ ] simple wg
 
 - [ ] (I) add: report of a complete configuration of nixos
 - [ ] (I) add: offline builds for installed system [doc](https://linus.schreibt.jetzt/posts/include-build-dependencies.html), system.includeBuildDependencies
