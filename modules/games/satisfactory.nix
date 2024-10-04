@@ -26,11 +26,11 @@ in
         description = "Beta channel to follow";
       };
 
-    #   address = lib.mkOption {
-    #     type = lib.types.str;
-    #     default = "0.0.0.0";
-    #     description = "Bind address";
-    #   };
+      #   address = lib.mkOption {
+      #     type = lib.types.str;
+      #     default = "0.0.0.0";
+      #     description = "Bind address";
+      #   };
 
       maxPlayers = lib.mkOption {
         type = lib.types.number;
@@ -72,8 +72,8 @@ in
       localAddress = "192.168.178.11/24";
       bindMounts = {
         "/var/lib/satisfactory" = {
-        hostPath = "/var/lib/satisfactory";
-        isReadOnly = false;
+          hostPath = "/var/lib/satisfactory";
+          isReadOnly = false;
         };
       };
       config =
@@ -104,7 +104,7 @@ in
             uid = 2000;
             group = "container";
             isSystemUser = true;
-            };
+          };
           users.groups.container = { };
 
           networking = {
