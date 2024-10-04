@@ -22,7 +22,7 @@
     ./tailscale.nix
     ./initrd-ssh.nix
     ./unbound.nix
-    ./monitoring/grafana-agent
+    ./monitoring
     ./autoinstall.nix
     ./watermark.nix
     ./desktop.nix
@@ -31,5 +31,6 @@
     ./nft
     ./games
     ./virt
+    ./ca.nix
   ];
 }
