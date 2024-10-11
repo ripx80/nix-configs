@@ -1,16 +1,18 @@
 /*
   todo:
-      - [x] use args
+      - [ ] use args
+        - [ ] check all args
       - [x] seperate:
         - [x] agent and scrape settings from server
+        - [ ] with https and without
       ca
-        - use custom tls auth: https://xeiaso.net/blog/site-to-site-wireguard-part-3-2019-04-11/
-        - auth on every page
-        - user + api keys
-        - use dns names for config
+        - [ ] use custom tls auth
+        - [x] auth on every page
+        - [x] use dns names for config
 
       - provisioning:
-        - amdin password, grafana
+        - [ ] find a way to provisining amdin password, no default way in grafana
+            - maybe keycloak?
         - [x] dashboards
             - simple nodes
             - simple nginx
@@ -29,16 +31,51 @@
             - if network usage
 
       - check best practices
+        - all
+        - nginx: https://nixos.wiki/wiki/Nginx#:~:text=in%20your%20firewall.-,Hardened%20setup%20with%20TLS%20and%20HSTS%20preloading,-For%20testing%20your
       - check storage time:
         - prometheus
         - loki
         - nginx access logs (logrotate?)
 
     optional:
-      - add alertmanager
+      - add alertmanager, if needed for notifications
       - change: grafana to config file settings
+      - check: all args working like hostIP for config in loki
       - add Grafana Alloy (grafana-agent: October 31, 2025 end of live)
       - add container around the services
+
+      ## crate a private ca (dont use minica)
+      ```
+        nix-shell -p minica openssl
+        mkdir ca; cd ca
+        minica -ca-cert foo.pem -ca-key foo-key.pem -domains bla.foo
+
+        # check ca cert
+        openssl x509 -in foo.pem -text -noout
+        # check host cert
+        openssl x509 -in cert.pem -text -noout
+        # check when the cert expires (2 years default)
+        openssl x509 -in cert.pem -text -noout | grep "Not After"
+        # check if trusted by ca
+        openssl verify -verbose -CAfile ../foo.pem  bla.foo.pem
+
+        # enable in nix
+        security.pki.certificates = meta.fn.cacert;
+        # or
+        security.pki.certificateFiles = [ "/pathto/cert.pem" ];
+
+      ## only openssl
+      https://docs.securosys.com/openssl/osslv3/Use-Cases/self_signed_certificate
+      - include bundle
+      - use hostname
+
+      ## authentication
+      # grafana not have user provisioning
+      # prometheus nginx basic auth
+      nix-shell -p apacheHttpd
+      htpasswd -c .htpasswd admin
+      ```
 */
 {
   config,
@@ -89,6 +126,21 @@ in
         default = 3031;
         description = "promtail internal port";
       };
+      certKey = mkOption {
+        type = types.path;
+        default = null;
+        description = "certificate key file in pem format";
+      };
+      cert = mkOption {
+        type = types.path;
+        default = null;
+        description = "certificate file in pem format";
+      };
+       htpasswd = mkOption {
+        type = types.path;
+        default = null;
+        description = "htpasswd file";
+      };
     };
   };
 
@@ -97,53 +149,54 @@ in
     # nginx reverse proxy
     services.nginx = {
       enable = true;
+      package = pkgs.nginxStable.override { openssl = pkgs.libressl; };
+
       recommendedProxySettings = true;
       recommendedOptimisation = true;
       recommendedGzipSettings = true;
-      # recommendedTlsSettings = true;
-
-      upstreams = {
-        "grafana" = {
-          servers = {
-            "127.0.0.1:${toString cfg.grafanaPort}" = { };
-          };
-        };
-        "prometheus" = {
-          servers = {
-            "127.0.0.1:${toString cfg.prometheusPort}" = { };
-          };
-        };
-        "loki" = {
-          servers = {
-            "127.0.0.1:${toString cfg.lokiPort}" = { };
-          };
-        };
-        # "promtail" = {
-        #   servers = {
-        #     "127.0.0.1:${toString cfg.promtailPort}" = { };
-        #   };
-        # };
-      };
+      recommendedTlsSettings = true;
 
       virtualHosts.grafana = {
+        onlySSL = true;
+        sslCertificateKey = cfg.certKey;
+        sslCertificate = cfg.cert;
+        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+
         locations."/" = {
-          proxyPass = "http://grafana";
+          proxyPass = "http://127.0.0.1:${toString cfg.grafanaPort}";
           proxyWebsockets = true;
         };
         listen = [
           {
             addr = cfg.exposedIP;
             port = 8010;
+            ssl = true;
           }
         ];
-      };
+    #     extraConfig =
+    #       # required when the target is also TLS server with multiple hosts
+    #       "proxy_ssl_server_name on;" +
+    #       # required when the server wants to use HTTP Authentication
+    #       "proxy_pass_header Authorization;"
+    #       ;
+       };
 
       virtualHosts.prometheus = {
-        locations."/".proxyPass = "http://prometheus";
+        onlySSL = true;
+        sslCertificateKey = cfg.certKey;
+        sslCertificate = cfg.cert;
+        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+
+        locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString cfg.prometheusPort}";
+            basicAuthFile = cfg.htpasswd;
+        };
+
         listen = [
           {
             addr = cfg.exposedIP;
             port = 8020;
+            ssl = true;
           }
         ];
       };
@@ -151,25 +204,23 @@ in
       # confirm with http://192.168.1.10:8030/loki/api/v1/status/buildinfo
       #     (or)     /config /metrics /ready
       virtualHosts.loki = {
-        locations."/".proxyPass = "http://loki";
+        onlySSL = true;
+        sslCertificateKey = cfg.certKey;
+        sslCertificate = cfg.cert;
+        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+
+        locations."/" = {
+            proxyPass = "http://127.0.0.1:${toString cfg.lokiPort}";
+            basicAuthFile = cfg.htpasswd;
+        };
         listen = [
           {
             addr = cfg.exposedIP;
             port = 8030;
+            ssl = true;
           }
         ];
       };
-
-      #   virtualHosts.promtail = {
-      #     locations."/".proxyPass = "http://promtail";
-      #     listen = [
-      #       {
-      #         addr = cfg.exposedIP;
-      #         port = 8031;
-      #       }
-      #     ];
-      #   };
-
     };
 
     # grafana: port 3010 (8010)
@@ -181,11 +232,13 @@ in
         # WARNING: this should match nginx setup!
         # prevents "Request origin is not authorized"
         server = {
-          root_url = "http://${cfg.exposedIP}:8010"; # helps with nginx / ws / live
+          root_url = "https://ripbox.fn.internal:8010"; # helps with nginx / ws / live
+          #root_url = "http://${cfg.exposedIP}:8010"; # helps with nginx / ws / live
           http_port = cfg.grafanaPort;
           http_addr = "127.0.0.1";
           protocol = "http";
-          #domain   = "localhost";
+          domain   = "ripbox.fn.internal";
+          # serve_from_sub_path = true; then /grafana/ is possible
         };
         analytics.reporting_enabled = false;
 
@@ -243,7 +296,6 @@ in
     services.loki = {
       enable = true;
       configFile = ./loki-config.yaml; # change port here if you use args
-      #extraFlags = ["-config.expand-env"];
     };
 
     environment.etc."loki/config.yaml" = {
@@ -259,70 +311,13 @@ in
       port = cfg.prometheusPort;
       enable = true;
       extraFlags = [ "--web.enable-remote-write-receiver" ];
-      #webConfigFile = null;
-
-      #   exporters = {
-      #     node = {
-      #       port = 3021;
-      #       enabledCollectors = [ "systemd" ];
-      #       enable = true;
-      #     };
-      #   };
 
       # ingest the published nodes
       scrapeConfigs = [
         {
           job_name = "prometheus";
-          # job_name = "nodes";
-          # static_configs = [
-          #   { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ]; }
-          # ];
         }
       ];
-      #   scrapeConfigs = [
-      #     {
-      #       job_name = "nodes";
-      #       static_configs = [
-      #         { targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ]; }
-      #       ];
-      #     }
-      #   ];
     };
-
-    # promtail: port 3031 (8031)
-    #
-    # services.promtail = {
-    #   enable = true;
-    #   configuration = {
-    #     server = {
-    #       http_listen_port = 3031;
-    #       grpc_listen_port = 0;
-    #     };
-    #     positions = {
-    #       filename = "/tmp/positions.yaml";
-    #     };
-    #     clients = [ { url = "http://127.0.0.1:${toString cfg.lokiPort}/loki/api/v1/push"; } ];
-    #     scrape_configs = [
-    #       {
-    #         job_name = "journal";
-    #         journal = {
-    #           max_age = "12h";
-    #           labels = {
-    #             job = "systemd-journal";
-    #             host = "ripbox"; # # change
-    #           };
-    #         };
-    #         relabel_configs = [
-    #           {
-    #             source_labels = [ "__journal__systemd_unit" ];
-    #             target_label = "unit";
-    #           }
-    #         ];
-    #       }
-    #     ];
-    #   };
-    #   # extraFlags
-    # };
-
   };
 }
