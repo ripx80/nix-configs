@@ -1,26 +1,22 @@
 /*
   todo:
-      - [ ] use args
-        - [ ] check all args
-      - [x] seperate:
-        - [x] agent and scrape settings from server
-        - [ ] with https and without
-      ca
-        - [ ] use custom tls auth
-        - [x] auth on every page
-        - [x] use dns names for config
-
-      - provisioning:
-        - [ ] find a way to provisining amdin password, no default way in grafana
-            - maybe keycloak?
+      - provisioning: 07.11
+        - [x] find a way to provisining amdin password, no default way in grafana
         - [x] dashboards
             - simple nodes
             - simple nginx
             - simple ssh login
             - simple wg
+        - check tls
+            - ./tls-scan -c search.yahoo.com --all --pretty
+            - sslmap
+            - sslscan/2  nix-shell -p sslscan
+            - tslx
 
         - alerts: notification channel
-            - discord
+            - [x] discord
+                - make alerting optional
+            - [ ] template
             - if no metrics send anymore
             - if ssh login detected
             - if cert expire
@@ -29,36 +25,16 @@
             - if ram usage
             - if disk usage
             - if network usage
-
-      - check best practices
-        - all
-        - nginx: https://nixos.wiki/wiki/Nginx#:~:text=in%20your%20firewall.-,Hardened%20setup%20with%20TLS%20and%20HSTS%20preloading,-For%20testing%20your
       - check storage time:
-        - prometheus
-        - loki
+        - prometheus, default 14 days
+        - loki, 62 days
         - nginx access logs (logrotate?)
 
     optional:
-      - add alertmanager, if needed for notifications
-      - change: grafana to config file settings
-      - check: all args working like hostIP for config in loki
       - add Grafana Alloy (grafana-agent: October 31, 2025 end of live)
       - add container around the services
 
-      ## crate a private ca (dont use minica)
-      ```
-        nix-shell -p minica openssl
-        mkdir ca; cd ca
-        minica -ca-cert foo.pem -ca-key foo-key.pem -domains bla.foo
-
-        # check ca cert
-        openssl x509 -in foo.pem -text -noout
-        # check host cert
-        openssl x509 -in cert.pem -text -noout
-        # check when the cert expires (2 years default)
-        openssl x509 -in cert.pem -text -noout | grep "Not After"
-        # check if trusted by ca
-        openssl verify -verbose -CAfile ../foo.pem  bla.foo.pem
+      ## crate a private ca
 
         # enable in nix
         security.pki.certificates = meta.fn.cacert;
@@ -66,15 +42,36 @@
         security.pki.certificateFiles = [ "/pathto/cert.pem" ];
 
       ## only openssl
-      https://docs.securosys.com/openssl/osslv3/Use-Cases/self_signed_certificate
-      - include bundle
-      - use hostname
+        # ca:
+        openssl genrsa -out rootCA.key 4096
+        openssl req -x509 -new -nodes -key rootCA.key -sha256 -days 3650 -out rootCA.crt
+
+        # server certificate and key
+        # key
+        openssl genrsa -out ripnote.key 4096
+        # request
+        openssl req -new -sha256 -key ripnote.key -subj "/O=frostnet, Inc./CN=ripnote.fn.internal" -out ripnote.csr
+        # verify request
+        openssl req -in ripnote.csr -noout -text
+        # generate cert
+        openssl x509 -req -in ripnote.csr -CA rootCA.crt -CAkey rootCA.key -CAcreateserial -out ripnote.crt -days 3650 -sha256
+        # verify cert
+        openssl x509 -in mydomain.com.crt -text -noout
+        openssl verify -verbose -CAfile rootCA.crt ripnote.crt
+
 
       ## authentication
-      # grafana not have user provisioning
-      # prometheus nginx basic auth
+      # grafana not have user provisioning, but you can set with
+      # services.grafana.settings.security.admin_password a password.
+      # this will leaked in the /nix/store.
+      # prometheus nginx grafana basic auth
       nix-shell -p apacheHttpd
       htpasswd -c .htpasswd admin
+      basic auth sens on every request the auth. its not optimal but better than nothing. use OAuth instead.
+
+      ## check ssl
+      nix-shell -p sslscan
+      sslscan ripnote.fn.internal:8010
       ```
 */
 {
@@ -141,6 +138,16 @@ in
         default = null;
         description = "htpasswd file";
       };
+      fqdn = mkOption {
+        type = types.str;
+        default = "localhost";
+        description = "set fqdn domain name";
+      };
+      env = mkOption {
+        type = types.path;
+        default = null;
+        description = "webhook for discord alerting";
+      };
     };
   };
 
@@ -165,6 +172,7 @@ in
         locations."/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.grafanaPort}";
           proxyWebsockets = true;
+          basicAuthFile = cfg.htpasswd;
         };
         listen = [
           {
@@ -232,15 +240,16 @@ in
         # WARNING: this should match nginx setup!
         # prevents "Request origin is not authorized"
         server = {
-          root_url = "https://ripbox.fn.internal:8010"; # helps with nginx / ws / live
+          root_url = "https://${cfg.fqdn}:8010"; # helps with nginx / ws / live
           #root_url = "http://${cfg.exposedIP}:8010"; # helps with nginx / ws / live
           http_port = cfg.grafanaPort;
           http_addr = "127.0.0.1";
           protocol = "http";
-          domain   = "ripbox.fn.internal";
+          domain   = cfg.fqdn;
           # serve_from_sub_path = true; then /grafana/ is possible
         };
         analytics.reporting_enabled = false;
+         #security.admin_password # only string allowed so pw is in store, use basic auth
 
       };
       provision = {
@@ -272,8 +281,32 @@ in
             ];
           };
         };
+        alerting = {
+            #rules.settings
+            #templates.settings
+            #policies.settings
+            contactPoints.settings = {
+                apiVersion = 1;
+                contactPoints = [{
+                    orgId = 1;
+                    name = "frostbot-discord";
+                    receivers = [{
+                    uid = "ce1563ndhgni9c";
+                    type = "discord";
+                    settings = {
+                        url = "\${DISCORD_WEBHOOK}"; #cfg.discordWebhook;
+                        use_discord_username = true;
+                        disableResolveMessage = true;
+                    };
+                    }];
+                }];
+            };
+        };
+        #notifiers = [];
       };
+
     };
+    systemd.services.grafana.serviceConfig.EnvironmentFile = cfg.env;
 
     environment.etc."grafana/dashboards/nodes.json" = {
       mode = "400";
@@ -289,21 +322,61 @@ in
       group = "grafana";
     };
 
-
-
     # loki: port 3030 (8030)
     #
     services.loki = {
       enable = true;
-      configFile = ./loki-config.yaml; # change port here if you use args
+      #configFile = ./loki-config.yaml; # change port here if you use args
+      configuration = {
+        auth_enabled = false;
+        analytics.reporting_enabled = false;
+        server.http_listen_port = cfg.lokiPort;
+        common = {
+            ring = {
+                instance_addr = "127.0.0.1";
+                kvstore.store =  "inmemory";
+            };
+            replication_factor = 1;
+            path_prefix = "/var/lib/loki";
+        };
+
+        schema_config = {
+            configs = [{
+                from = "2020-07-31";
+                store = "tsdb";
+                object_store = "filesystem";
+                schema = "v13";
+                index = {
+                    prefix = "index_";
+                    period = "24h";
+                };
+            }];
+        };
+        storage_config = {
+            filesystem.directory = "/var/lib/loki/chunks";
+        };
+        limits_config = {
+            retention_period = "1488h"; # 62 days
+            reject_old_samples = true;
+            reject_old_samples_max_age = "168h"; # 7 days
+        };
+        compactor = {
+            working_directory = "/var/lib/loki/retention";
+            compaction_interval = "10m";
+            retention_enabled = true;
+            retention_delete_delay = "2h";
+            retention_delete_worker_count = 150;
+            delete_request_store = "filesystem";
+        };
+      };
     };
 
-    environment.etc."loki/config.yaml" = {
-      mode = "400";
-      source = ./loki-config.yaml;
-      user = "loki";
-      group = "loki";
-    };
+    # environment.etc."loki/config.yaml" = {
+    #   mode = "400";
+    #   source = ./loki-config.yaml;
+    #   user = "loki";
+    #   group = "loki";
+    # };
 
     # prometheus: port 3020 (8020)
 
@@ -311,8 +384,7 @@ in
       port = cfg.prometheusPort;
       enable = true;
       extraFlags = [ "--web.enable-remote-write-receiver" ];
-
-      # ingest the published nodes
+       # ingest the published nodes
       scrapeConfigs = [
         {
           job_name = "prometheus";
