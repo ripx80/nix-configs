@@ -72,6 +72,16 @@
       ## check ssl
       nix-shell -p sslscan
       sslscan ripnote.fn.internal:8010
+
+      ## check nginx
+      curl -sI https://ripbox.fn.internal:8010 # try to get version
+      curl -sI https://ripbox.fn.internal:8010 -v --http1.1 # http1.1 get
+      curl -sI https://ripbox.fn.internal:8010 -v --http2 # http2 get
+
+      ## system scan
+      nix-shell -p lynis
+      lynis audit system
+
       ```
 */
 {
@@ -156,18 +166,53 @@ in
     # nginx reverse proxy
     services.nginx = {
       enable = true;
-      package = pkgs.nginxStable.override { openssl = pkgs.libressl; };
+      #package = pkgs.nginxStable.override { openssl = pkgs.boringssl; };
 
       recommendedProxySettings = true;
       recommendedOptimisation = true;
       recommendedGzipSettings = true;
       recommendedTlsSettings = true;
 
+      # Only allow PFS-enabled ciphers with AES256
+      sslCiphers = "AES256+EECDH:AES256+EDH:!aNULL";
+      #sslCiphers = "TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305";
+
+      appendHttpConfig = ''
+            # Add HSTS header with preloading to HTTPS requests.
+            # Adding this header to HTTP requests is discouraged
+            map $scheme $hsts_header {
+                https   "max-age=31536000; includeSubdomains; preload";
+            }
+            add_header Strict-Transport-Security $hsts_header;
+
+            # Enable CSP for your services.
+            # add_header Content-Security-Policy "script-src 'self'; object-src 'none'; base-uri 'none';" always;
+
+            # Minimize information leaked to other domains
+            add_header 'Referrer-Policy' 'origin-when-cross-origin';
+
+            # Disable embedding as a frame
+            add_header X-Frame-Options DENY;
+
+            # Prevent injection of code in other mime types (XSS Attacks)
+            add_header X-Content-Type-Options nosniff;
+
+            # This might create errors
+            proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
+
+            # disable version leaking
+            # server_tokens off; # already set by recommended
+
+            # send_file func to enable ktls
+            # sendfile on;
+         '';
+
       virtualHosts.grafana = {
         onlySSL = true;
         sslCertificateKey = cfg.certKey;
         sslCertificate = cfg.cert;
-        sslTrustedCertificate = "/etc/ssl/certs/ca-bundle.crt";
+        sslTrustedCertificate = cfg.cert; #"/etc/ssl/certs/ca-bundle.crt";
+        kTLS = true;
 
         locations."/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.grafanaPort}";
@@ -181,12 +226,21 @@ in
             ssl = true;
           }
         ];
-    #     extraConfig =
-    #       # required when the target is also TLS server with multiple hosts
-    #       "proxy_ssl_server_name on;" +
-    #       # required when the server wants to use HTTP Authentication
-    #       "proxy_pass_header Authorization;"
-    #       ;
+
+         extraConfig = ''
+            # required when the target is also TLS server with multiple hosts
+            #"proxy_ssl_server_name on;" +
+            # required when the server wants to use HTTP Authentication
+            #"proxy_pass_header Authorization;"
+
+            # tls
+            ssl_stapling off;
+            ssl_stapling_verify off;
+            ssl_protocols TLSv1.3;
+
+            # kernel tls (ktls)
+            # ssl_conf_command Options KTLS;
+            '';
        };
 
       virtualHosts.prometheus = {
