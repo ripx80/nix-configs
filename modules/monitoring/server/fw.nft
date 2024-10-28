@@ -1,0 +1,8 @@
+# define http = { "wg0" }
+table inet fw {
+    chain services {
+            iifname $http tcp dport 8010 counter accept comment "grafana"
+            iifname $http tcp dport 8020 counter accept comment "prometheus"
+            iifname $http tcp dport 8030 counter accept comment "loki"
+        }
+}

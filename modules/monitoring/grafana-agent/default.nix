@@ -27,6 +27,11 @@ in
         '';
         example = "config.age.secrets." services/monitoring/agent ".path";
       };
+      agent = mkOption {
+        type = types.path;
+        description = "path to agent.yaml config file";
+        default = ./agent.yaml;
+      };
     };
   };
 
@@ -54,7 +59,7 @@ in
 
     environment.etc."grafana-agent/agent.yaml" = {
       mode = "400";
-      source = ./agent.yaml;
+      source = cfg.agent;
       user = "grafana";
       group = "grafana";
     };
