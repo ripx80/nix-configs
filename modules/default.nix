@@ -32,5 +32,6 @@
     ./games
     ./virt
     ./ca.nix
+    ./container.nix
   ];
 }

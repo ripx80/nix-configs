@@ -2,6 +2,15 @@
 # steam log file location: ~/.local/share/Steam/logs
 # game log file location: ~/SatisfactoryDedicatedServer/FactoryGame/Saved/Logs
 # todo: can not import satisfactory module inside a container or vm.
+# todo: find a good way to create /var/lib/satisfactory
+# ripmod = {
+# virt.network.enable = true;
+#     satisfactory = {
+#       enable = true;
+#       extraSteamCmdArgs = "-log -DisableSeasonalEvents";
+#     };
+# };
+
 {
   config,
   lib,
@@ -111,6 +120,26 @@ in
             defaultGateway = "192.168.178.1";
             firewall.enable = false;
           };
+
+          #   systemd.tmpfiles.rules = [
+          #     "d /var/lib/satisfactory 0700 container container -"
+          #   ];
+          #          systemd.services.runTmpfilesCreate = {
+          #     description = "Run systemd-tmpfiles --create after deployment";
+          #     serviceConfig = {
+          #       ExecStart = "${pkgs.systemd}/bin/systemd-tmpfiles --create";
+          #       Type = "oneshot";
+          #     };
+          #     # Startet den Dienst bei Bedarf, z. B. nach Änderungen an tmpfiles oder während eines Deployments.
+          #     wantedBy = [ "multi-user.target" ];
+          #   };
+
+          #   systemd.timers.runTmpfilesCreateTimer = {
+          #     description = "Timer to run systemd-tmpfiles after each deployment";
+          #     wantedBy = [ "timers.target" ];
+          #     timerConfig.OnBootSec = "5min";      # Wird 5 Minuten nach dem Booten ausgeführt
+          #     timerConfig.OnUnitActiveSec = "1h";  # Wird dann jede Stunde ausgeführt, falls benötigt
+          #   };
 
           systemd.services.satisfactory = {
             wantedBy = [ "multi-user.target" ];

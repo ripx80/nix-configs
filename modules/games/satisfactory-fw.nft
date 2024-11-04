@@ -1,0 +1,27 @@
+# define satisfactory = "wg0"
+# define satisfactory_ports = { 7777 }
+# ${builtins.readFile (nix-configs + /modules/games/satisfactory-fw.nft)}
+# ${builtins.readFile (nix-configs + /modules/nft/br0-virt.nft)}
+
+# fixed internal ip: 192.168.178.11
+
+table ip nat {
+ chain prerouting {
+        type nat hook prerouting priority -100; policy accept;
+        iifname $satisfactory tcp dport $satisfactory_ports counter dnat to 192.168.178.11 comment "satisfactory ports"
+        iifname $satisfactory udp dport $satisfactory_ports counter dnat to 192.168.178.11 comment "satisfactory ports"
+        # iifname $satisfactory tcp dport 8080 counter dnat to 192.168.178.11 comment "only for test"
+    }
+chain postrouting {
+        ip daddr 192.168.178.11 counter masquerade comment "port forwarding satisfactory" # todo, check this, add interface
+    }
+}
+
+table inet routing {
+    chain forward {
+            # port forwarding satisfactory
+            iifname $satisfactory oifname "br0" tcp dport $satisfactory_ports counter accept comment "port forward internet to internal"
+            iifname $satisfactory oifname "br0" udp dport $satisfactory_ports counter accept comment "port forward internet to internal"
+            # iifname $satisfactory oifname "br0" tcp dport 8080 counter accept comment "only to test forwarding"
+    }
+}

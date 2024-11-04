@@ -1,3 +1,6 @@
+# define virt_out = "eth0"
+# ${builtins.readFile (nix-configs + /modules/nft/br0-virt.nft)}
+
 {
   pkgs,
   config,
