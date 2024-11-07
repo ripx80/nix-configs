@@ -22,6 +22,7 @@ in
     home.file.".config/bash/go.sh".source = ./go.sh;
     home.file.".config/bash/mac.sh".source = ./mac.sh;
     home.file.".config/bash/docker.sh".source = ./docker.sh;
+    home.file.".config/bash/nix.sh".source = ./nix.sh;
     programs.bash = {
       enable = true;
       initExtra = (builtins.readFile ./bashrc);

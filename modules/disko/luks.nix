@@ -7,6 +7,8 @@
   docs:
    - https://nixos.wiki/wiki/Full_Disk_Encryption
    - https://shen.hong.io/installing-nixos-with-encrypted-root-partition-and-seperate-boot-partition/
+   todo:
+    add [ "noexec" ]: /, /etc/nixos, /var/log
 */
 
 {

@@ -89,6 +89,9 @@ in
         # textconv = "echo .dump | sqlite3" # add this to .gitattributes to see the sqlite3 diff
       };
       core.editor = "nano -w";
+      # use different urls with ssh keys, git can swap urls
+      # [url "github-plnx:planet-express"]
+      #  insteadOf = git@github.com:planet-express
 
       # Sign all tags and commits using ssh key
       commit.gpgsign = true;

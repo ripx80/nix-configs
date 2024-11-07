@@ -1,4 +1,3 @@
-# not tested at the moment
 {
   disks ? [ "/dev/sda" ],
   ...

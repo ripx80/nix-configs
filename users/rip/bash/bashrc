@@ -5,7 +5,7 @@
 
 PS1="\[\e[35m\]\t\[\e[m\] \[\e[36m\]\u\[\e[m\]@\[\e[32m\]\h\[\e[m\]:\[\e[33m\]\w\[\e[m\]$ "
 
-imports=( "vault.sh" "alias.sh" "k8s.sh" "git.sh" "go.sh" "mac.sh" "docker.sh" )
+imports=( "vault.sh" "alias.sh" "k8s.sh" "git.sh" "go.sh" "mac.sh" "docker.sh" "nix.sh" )
 for i in "${imports[@]}"
  do
     # shellcheck disable=SC1090

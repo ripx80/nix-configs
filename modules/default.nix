@@ -33,5 +33,6 @@
     ./virt
     ./ca.nix
     ./container.nix
+    ./audit.nix
   ];
 }

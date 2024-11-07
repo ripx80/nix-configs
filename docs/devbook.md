@@ -3,6 +3,18 @@
 keep in mind: this is the underlying lib
 think: in respect of the crisis in the nix community, keep things out of nix like fw scripts to switch to another os.
 
+## v0.4 - ?
+
+### add
+
+- [x] (I) add: audit daemon module
+- [ ] (I) add: disable usb complete
+- [ ] (I) add: use defined usb device list: https://phip1611.de/blog/systemd-udev-rules-to-detect-usb-device-plugging/
+
+### changes
+
+- [x] (I) change: logrotate config, nginx, use default
+
 ## v0.3 - monitoring
 
 ### add
@@ -102,7 +114,7 @@ monitoring
 
 - [ ] (F) add: container around the services
 - [ ] (I) change: grafana-agent to grafana alloy, (grafana-agent: October 31, 2025 end of live)
-- [ ] (I) change: logrotate config, nginx aso
+
 - [ ] (I) add: alerts
   - [ ] make alerting optional
   - [x] discord
