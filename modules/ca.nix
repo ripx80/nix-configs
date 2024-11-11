@@ -15,8 +15,9 @@ in
     ripmod.ca = {
       enable = mkEnableOption pkgDesc;
       cert = mkOption {
-        type = types.str;
-        description = "ca certificate, system wide";
+        type = types.listOf types.str;
+        default = [ ];
+        description = "ca certificates, system wide";
       };
       host = mkOption {
         type = types.str;
@@ -28,7 +29,7 @@ in
   config = mkIf cfg.enable (mkMerge [
     ({
       # ca
-      security.pki.certificates = [ cfg.cert ];
+      security.pki.certificates = cfg.cert;
       users.groups.ca = { };
       users.groups.web = { }; # maybe seperate this in a web module
     })
@@ -36,7 +37,7 @@ in
       # host cert, public
       environment.etc."ssl/cert.pem" = {
         mode = "444";
-        text = cfg.host + cfg.cert;
+        text = cfg.host + (lib.strings.concatStrings cfg.cert);
         user = "root";
         group = "ca";
       };

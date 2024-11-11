@@ -75,6 +75,15 @@ in
         default = null;
         description = "webhook for discord alerting";
       };
+      services = mkOption {
+        type = types.listOf types.str;
+        default = [ ];
+        description = ''
+          systemd services that must be present when nginx starts.
+          this is important for dynamic interfaces like wireguard wg0.
+        '';
+        example = [ "wireguard-wg0.service" ];
+      };
     };
   };
 
@@ -86,9 +95,12 @@ in
       "web"
     ];
 
+    systemd.services.nginx.requires=cfg.services;
+
     # nginx reverse proxy
     services.nginx = {
       enable = true;
+      resolver.ipv6 = false;
       #package = pkgs.nginxStable.override { openssl = pkgs.boringssl; };
       recommendedProxySettings = true;
       recommendedOptimisation = true;
@@ -335,19 +347,22 @@ in
     };
 
     # loki: port 3030 (8030)
+    # curl localhost:3030/ready
     services.loki = {
       enable = true;
       configuration = {
         auth_enabled = false;
         analytics.reporting_enabled = false;
         server.http_listen_port = cfg.lokiPort;
+        server.http_listen_address = "127.0.0.1";
+        server.grpc_listen_address = "127.0.0.1";
         common = {
-          ring = {
-            instance_addr = "127.0.0.1";
-            kvstore.store = "inmemory";
-          };
+          instance_addr = "127.0.0.1";
           replication_factor = 1;
           path_prefix = "/var/lib/loki";
+          ring = {
+            kvstore.store = "inmemory";
+          };
         };
 
         schema_config = {
@@ -386,6 +401,7 @@ in
     # prometheus: port 3020 (8020)
     services.prometheus = {
       port = cfg.prometheusPort;
+      listenAddress = "127.0.0.1"; # web.listen-address
       enable = true;
       extraFlags = [ "--web.enable-remote-write-receiver" ];
       # ingest the published nodes
