@@ -63,7 +63,7 @@ in
         server = {
           interface = [
             "127.0.0.1"
-            "::1"
+            # "::1"
           ] ++ cfg.interface; # default
           num-threads = 1;
           verbosity = 1;
@@ -74,7 +74,7 @@ in
           max-udp-size = 3072;
           access-control = [
             "127.0.0.1/8 allow"
-            "::1/128 allow"
+            #"::1/128 allow"
           ] ++ cfg.access-control;
 
           private-address = cfg.private-address;
