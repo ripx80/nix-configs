@@ -8,11 +8,7 @@ think: in respect of the crisis in the nix community, keep things out of nix lik
 ### add
 
 - [x] (I) add: audit daemon module
-- [ ] (I) add: disable usb complete
-- [ ] (I) add: use defined usb [device list](https://phip1611.de/blog/systemd-udev-rules-to-detect-usb-device-plugging/)
-
 - [x] (I) change: logrotate config, nginx, use default
-
 - [ ] (F) fix: nft ingress-ddos adds rules after update every time
 
 ## v0.3 - monitoring
@@ -114,7 +110,9 @@ monitoring
 
 - [ ] (F) add: container around the services
 - [ ] (I) change: grafana-agent to grafana alloy, (grafana-agent: October 31, 2025 end of live)
-
+- [ ] (I) change: dns over quic
+- [ ] (I) add: disable usb complete
+- [ ] (I) add: use defined usb [device list](https://phip1611.de/blog/systemd-udev-rules-to-detect-usb-device-plugging/)
 - [ ] (I) add: alerts
   - [ ] make alerting optional
   - [x] discord
