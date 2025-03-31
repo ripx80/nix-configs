@@ -95,7 +95,7 @@ in
       "web"
     ];
 
-    systemd.services.nginx.requires=cfg.services;
+    systemd.services.nginx.requires = cfg.services;
 
     # nginx reverse proxy
     services.nginx = {
