@@ -19,6 +19,7 @@ in
     ./keybase
     ./wireshark
     ./librewolf
+    ./ff
   ];
 
   options = {
@@ -41,6 +42,7 @@ in
       # keybase.gui = false;
       wireshark.enable = false; # home-manager not support programs.wireshark.enable = true;
       librewolf.enable = true;
+      ff.enable = false; # not working at the moment
     };
     home.packages = with pkgs; [
       google-chrome # use librewolf instead

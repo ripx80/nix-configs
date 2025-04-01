@@ -19,6 +19,9 @@ in
       enable = true;
 
       settings = {
+        "extensions.activeThemeID" = "firefox-compact-dark@mozilla.org";
+        "privacy.clearOnShutdown.history" = true;
+        "browser.translations.automaticallyPopup" = false;
         # Enable WebGL, cookies and history
         #"webgl.disabled" = false;
         #"privacy.resistFingerprinting" = false;
