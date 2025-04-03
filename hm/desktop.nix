@@ -41,12 +41,11 @@ in
       # keybase.enable = false; # enable if you needed
       # keybase.gui = false;
       wireshark.enable = false; # home-manager not support programs.wireshark.enable = true;
-      librewolf.enable = true;
-      ff.enable = false; # not working at the moment
+      librewolf.enable = false;
+      ff.enable = true;
     };
     home.packages = with pkgs; [
-      google-chrome # use librewolf instead
-      #librewolf # try to configrue https://nixos.wiki/wiki/Librewolf
+      #google-chrome
       killall
       file
       spotify # search for a alternative
