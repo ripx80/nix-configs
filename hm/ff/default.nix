@@ -152,7 +152,7 @@ in
             "browser.newtabpage.activity-stream.system.showSponsored" = false;
             # disable session restore
             "browser.sessionstore.resume_session_once" = false;
-            "browser.sessionstore.max_tabs_undo" = 0;
+            "browser.sessionstore.max_tabs_undo" = 10; # changed
             # disable welcome notices
             "browser.startup.homepage_override.mstone" = "ignore";
             # disable General>Browsing>Recommend extensions/features as you browse
@@ -162,6 +162,10 @@ in
             "browser.urlbar.showSearchTerms.enabled" = false;
             # enable toolbar
             "browser.toolbar.uiCustomization.enabled" = true;
+            # disable suggest bookmarks
+            "browser.urlbar.suggest.bookmark" = false;
+            "browser.urlbar.suggest.engines" = false;
+
 
             /**
               SEARCH **
