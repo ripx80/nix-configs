@@ -476,7 +476,7 @@ in
             "pdfjs.disabled" = false; # default
             "pdfjs.enableScripting" = false;
             # disable middle click on new tab button opening URLs or searches using clipboard
-            "browser.tabs.searchclipboardfor.middleclick" = false;
+            "browser.tabs.searchclipboardfor.middleclick" = true; # changed
             # disable downloads panel opening on every download
             "browser.download.alwaysOpenPanel" = false;
             # disable adding downloads to the system's "recent documents" list
