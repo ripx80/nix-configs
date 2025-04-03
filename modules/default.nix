@@ -34,5 +34,6 @@
     ./ca.nix
     ./container.nix
     ./audit.nix
+    ./cgit.nix
   ];
 }
